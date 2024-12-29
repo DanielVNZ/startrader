@@ -11,7 +11,6 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
-
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -93,7 +92,10 @@ export default function Chat() {
       </div>
 
       {/* Messages Container */}
-      <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4 pb-20">
+      <div
+        className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
+        style={{ paddingBottom: "96px" }} // Reserve space for the input section (80px height + 16px buffer)
+      >
         {messages.length > 0 ? (
           messages.map((message, i) => (
             <div
@@ -147,59 +149,15 @@ export default function Chat() {
             </div>
           ))
         ) : (
-      <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-          Welcome to <span className="text-green-500">Star Trader!</span>
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Your go-to assistant for planning trade routes and accessing accurate commodity prices for specific locations.
-        </p>
-        <div className="space-y-2">
-          <p className="text-gray-600 dark:text-gray-300">
-            <span className="font-semibold text-gray-800 dark:text-gray-100">Help improve data:</span>{" "}
-            <a
-              href="https://uexcorp.space/data/signup"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
-            >
-              https://uexcorp.space/data/signup
-            </a>
-          </p>
-          <p className="text-gray-600 dark:text-gray-300">
-            <span className="font-semibold text-gray-800 dark:text-gray-100">Donate to UEXCORP:</span>{" "}
-            <a
-              href="https://ko-fi.com/uexcorp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
-            >
-              Ko-fi
-            </a>{" "}
-            |{" "}
-            <a
-              href="https://www.patreon.com/uexcorp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
-            >
-              Patreon
-            </a>
-          </p>
-          <p className="text-gray-600 dark:text-gray-300">
-            <span className="font-semibold text-gray-800 dark:text-gray-100">Donate to DanielVNZ (Bot Creator):</span>{" "}
-            <a
-              href="https://ko-fi.com/danielvnz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
-            >
-              Ko-fi
-            </a>
-          </p>
-        </div>
-      </div>
-         
+          <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Welcome to <span className="text-green-500">Star Trader!</span>
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Your go-to assistant for planning trade routes and accessing
+              accurate commodity prices for specific locations.
+            </p>
+          </div>
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -217,7 +175,7 @@ export default function Chat() {
             required
             rows={1}
             autoFocus
-            placeholder="Send a message"
+            placeholder="How can Star Trader help you today?"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -250,29 +208,6 @@ export default function Chat() {
             )}
           </button>
         </form>
-
-        {/* Toggle Button */}
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          {isDarkMode ? "☀️" : "🌙"}
-        </button>
-
-        {/* Donation Button */}
-        <a
-          href="https://ko-fi.com/danielvnz"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-3 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          <Image
-            src="https://www.svgrepo.com/show/333905/donate-heart.svg"
-            alt="Donate"
-            width={24}
-            height={24}
-          />
-        </a>
       </div>
     </main>
   );
