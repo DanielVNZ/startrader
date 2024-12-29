@@ -94,7 +94,7 @@ export default function Chat() {
             rel="noopener noreferrer"
             className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            💲💗 Donate Here
+            💗 Donate Here 💗
           </a>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default function Chat() {
         ) : (
           <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-              Welcome to <span className="text-green-500">Star Trader!</span>
+              Welcome to <span className="text-green-500">Star Trader</span>
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               Your go-to assistant for planning trade routes and accessing
