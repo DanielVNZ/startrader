@@ -36,7 +36,7 @@ async function getKnowledgeBase() {
   ### Knowledge Base
   ${knowledgeBaseContent}
   
-  Please adhere to this information while assisting users.
+  Please Read this BEFORE calling an API. This information will help you fine tine what you send through the API. 
   `,
     };
   
