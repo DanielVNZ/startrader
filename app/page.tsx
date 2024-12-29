@@ -197,58 +197,58 @@ export default function Chat() {
       </div>
 
       {/* Footer Section */}
-      <div className="fixed bottom-0 w-full flex items-center justify-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="relative flex-1 max-w-screen-md rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
-        >
-          <Textarea
-            ref={inputRef}
-            tabIndex={0}
-            required
-            rows={1}
-            autoFocus
-            placeholder="Send a message"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                formRef.current?.requestSubmit();
-                e.preventDefault();
-              }
-            }}
-            spellCheck={false}
-            className="w-full pr-10 focus:outline-none dark:bg-gray-800 dark:text-white"
-          />
-          <button
-            className={clsx(
-              "absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all",
-              disabled
-                ? "cursor-not-allowed bg-white dark:bg-gray-800"
-                : "bg-green-500 hover:bg-green-600"
-            )}
-            disabled={disabled}
+      <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
+        <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
+          {/* Input Form */}
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="relative flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
           >
-            {isLoading ? (
-              <LoadingCircle />
-            ) : (
-              <SendIcon
-                className={clsx(
-                  "h-4 w-4",
-                  input.length === 0 ? "text-gray-300" : "text-white"
-                )}
-              />
-            )}
-          </button>
-        </form>
+            <Textarea
+              ref={inputRef}
+              tabIndex={0}
+              required
+              rows={1}
+              autoFocus
+              placeholder="Send a message"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  formRef.current?.requestSubmit();
+                  e.preventDefault();
+                }
+              }}
+              spellCheck={false}
+              className="w-full pr-10 focus:outline-none dark:bg-gray-800 dark:text-white"
+            />
+            <button
+              className={clsx(
+                "absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all",
+                disabled
+                  ? "cursor-not-allowed bg-white dark:bg-gray-800"
+                  : "bg-green-500 hover:bg-green-600"
+              )}
+              disabled={disabled}
+            >
+              {isLoading ? (
+                <LoadingCircle />
+              ) : (
+                <SendIcon
+                  className={clsx(
+                    "h-4 w-4",
+                    input.length === 0 ? "text-gray-300" : "text-white"
+                  )}
+                />
+              )}
+            </button>
+          </form>
 
-        {/* Buttons Container */}
-        <div className="flex gap-4 mt-3 sm:mt-0">
-          {/* Toggle Button */}
+          {/* Dark Mode Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             {isDarkMode ? "☀️" : "🌙"}
           </button>
@@ -258,7 +258,7 @@ export default function Chat() {
             href="https://ko-fi.com/danielvnz"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             💲💗 Donate Here
           </a>
