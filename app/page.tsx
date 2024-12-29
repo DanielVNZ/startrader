@@ -162,7 +162,6 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-
       {/* Input Section */}
       <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 sm:px-0">
         <form
@@ -217,6 +216,21 @@ export default function Chat() {
         >
           {isDarkMode ? "☀️" : "🌙"}
         </button>
+
+        {/* Donate Button */}
+        <a
+          href="https://ko-fi.com/danielvnz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          <Image
+            src="https://www.svgrepo.com/show/194260/donate.svg"
+            alt="Donate Icon"
+            width={24}
+            height={24}
+          />
+        </a>
       </div>
     </main>
   );
