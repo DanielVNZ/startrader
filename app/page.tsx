@@ -65,14 +65,14 @@ export default function Chat() {
             key={i}
             className={clsx(
               "flex w-full items-center justify-center border-b border-gray-200 py-8",
-              message.role === "user" ? "bg-white" : "bg-gray-100",
+              message.role === "user" ? "bg-white" : "bg-gray-100"
             )}
           >
             <div className="flex w-full max-w-screen-md items-start space-x-4 px-5 sm:px-0">
               <div
                 className={clsx(
                   "p-1.5 text-white",
-                  message.role === "assistant" ? "bg-green-500" : "bg-black",
+                  message.role === "assistant" ? "bg-green-500" : "bg-black"
                 )}
               >
                 {message.role === "user" ? (
@@ -85,7 +85,6 @@ export default function Chat() {
                 className="prose mt-1 w-full break-words prose-p:leading-relaxed"
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  // open links in new tab
                   a: (props) => (
                     <a {...props} target="_blank" rel="noopener noreferrer" />
                   ),
@@ -98,38 +97,35 @@ export default function Chat() {
         ))
       ) : (
         <div className="border-gray-200 sm:mx-0 mx-5 mt-20 max-w-screen-md rounded-md border sm:w-full">
-  <div className="flex flex-col space-y-4 p-7 sm:p-10">
-    <h1 className="text-lg font-semibold text-black">
-      Welcome to Star Trader!
-    </h1>
-    <p className="text-gray-500">
-      Your home of all trading needs!
-    </p>
-    <p className="text-gray-500">
-      Want to become a Data Runner? Join here:{" "}
-      <a
-        href="https://uexcorp.space/data/signup"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-medium underline underline-offset-4 transition-colors hover:text-black"
-      >
-        https://uexcorp.space/data/signup
-      </a>
-    </p>
-    <p className="text-gray-500">
-      If you would like to support me to keep this bot alive:{" "}
-      <a
-        href="https://ko-fi.com/danielvnz"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-medium underline underline-offset-4 transition-colors hover:text-black"
-      >
-        https://ko-fi.com/danielvnz
-      </a>
-    </p>
-  </div>
-</div>
-
+          <div className="flex flex-col space-y-4 p-7 sm:p-10">
+            <h1 className="text-lg font-semibold text-black">
+              Welcome to Star Trader!
+            </h1>
+            <p className="text-gray-500">Your home of all trading needs!</p>
+            <p className="text-gray-500">
+              Want to become a Data Runner? Join here: {" "}
+              <a
+                href="https://uexcorp.space/data/signup"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline underline-offset-4 transition-colors hover:text-black"
+              >
+                https://uexcorp.space/data/signup
+              </a>
+            </p>
+            <p className="text-gray-500">
+              If you would like to support me to keep this bot alive: {" "}
+              <a
+                href="https://ko-fi.com/danielvnz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline underline-offset-4 transition-colors hover:text-black"
+              >
+                https://ko-fi.com/danielvnz
+              </a>
+            </p>
+          </div>
+        </div>
       )}
       <div className="fixed bottom-0 flex w-full flex-col items-center space-y-3 bg-gradient-to-b from-transparent via-gray-100 to-gray-100 p-5 pb-3 sm:px-0">
         <form
@@ -160,7 +156,7 @@ export default function Chat() {
               "absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all",
               disabled
                 ? "cursor-not-allowed bg-white"
-                : "bg-green-500 hover:bg-green-600",
+                : "bg-green-500 hover:bg-green-600"
             )}
             disabled={disabled}
           >
@@ -170,14 +166,14 @@ export default function Chat() {
               <SendIcon
                 className={clsx(
                   "h-4 w-4",
-                  input.length === 0 ? "text-gray-300" : "text-white",
+                  input.length === 0 ? "text-gray-300" : "text-white"
                 )}
               />
             )}
           </button>
         </form>
         <p className="text-center text-xs text-gray-400">
-          Built with{" "}
+          Built with {" "}
           <a
             href="https://platform.openai.com/docs/guides/gpt/function-calling"
             target="_blank"
@@ -186,7 +182,7 @@ export default function Chat() {
           >
             OpenAI Functions
           </a>{" "}
-          and{" "}
+          and {" "}
           <a
             href="https://sdk.vercel.ai/docs"
             target="_blank"
@@ -195,7 +191,7 @@ export default function Chat() {
           >
             Vercel AI SDK
           </a>
-          .{" "}
+          . {" "}
           <a
             href="https://github.com/steven-tey/chathn"
             target="_blank"
@@ -204,7 +200,7 @@ export default function Chat() {
           >
             View the repo
           </a>{" "}
-          or{" "}
+          or {" "}
           <a
             href="https://vercel.com/templates/next.js/chathn"
             target="_blank"
