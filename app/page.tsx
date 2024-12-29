@@ -198,12 +198,12 @@ export default function Chat() {
 
       {/* Footer Section */}
       <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
+        {/* Input Form */}
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
-          {/* Input Form */}
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="relative flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
+            className="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
           >
             <Textarea
               ref={inputRef}
@@ -244,25 +244,25 @@ export default function Chat() {
               )}
             </button>
           </form>
-
-          {/* Dark Mode Button */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="absolute bottom-5 left-0 ml-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            {isDarkMode ? "☀️" : "🌙"}
-          </button>
-
-          {/* Donate Button */}
-          <a
-            href="https://ko-fi.com/danielvnz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute bottom-5 right-0 mr-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            💲💗 Donate Here
-          </a>
         </div>
+
+        {/* Dark Mode Button */}
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          {isDarkMode ? "☀️" : "🌙"}
+        </button>
+
+        {/* Donate Button */}
+        <a
+          href="https://ko-fi.com/danielvnz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          💲💗 Donate Here
+        </a>
       </div>
     </main>
   );
