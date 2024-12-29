@@ -12,7 +12,7 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
-const delay = (ms : number) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
@@ -138,11 +138,22 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
 
 `};
 
-    // Include all messages without truncation
-    const extendedMessages = [systemMessage, ...recentMessages];
+    // Limit message tokens
+    const calculateTokens = (message : any) => message.content.length / 4; // Rough estimate (1 token = ~4 characters)
+    let totalTokens = 0;
+    const limitedMessages = [];
+
+    for (const message of recentMessages.reverse()) {
+        const messageTokens = calculateTokens(message);
+        if (totalTokens + messageTokens > 14000) break;
+        limitedMessages.unshift(message);
+        totalTokens += messageTokens;
+    }
+
+    const extendedMessages = [systemMessage, ...limitedMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo-16k",
+        model: "gpt-4o",
         messages: extendedMessages,
         stream: true,
         functions,
@@ -161,7 +172,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
             const newMessages = createFunctionCallMessages(result);
             await delay(2000); // Throttle subsequent requests
             return openai.chat.completions.create({
-                model: "gpt-3.5-turbo-16k",
+                model: "gpt-4o",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
                 max_tokens: 2500,
