@@ -73,12 +73,33 @@ export default function Chat() {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
-      {/* Header */}
+      {/* Top Bar */}
+      <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
+        <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            {isDarkMode ? "☀️" : "🌙"}
+          </button>
+
+          {/* Donate Button */}
+          <a
+            href="https://ko-fi.com/danielvnz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            💲💗 Donate Here
+          </a>
+        </div>
+      </div>
 
       {/* Messages Container */}
       <div
         className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
-        style={{ paddingBottom: "96px" }} // Reserve space for the input section (80px height + 16px buffer)
+        style={{ paddingTop: "96px", paddingBottom: "96px" }}
       >
         {messages.length > 0 ? (
           messages.map((message, i) => (
@@ -245,24 +266,6 @@ export default function Chat() {
             </button>
           </form>
         </div>
-
-        {/* Dark Mode Button */}
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          {isDarkMode ? "☀️" : "🌙"}
-        </button>
-
-        {/* Donate Button */}
-        <a
-          href="https://ko-fi.com/danielvnz"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          💲💗 Donate Here
-        </a>
       </div>
     </main>
   );
