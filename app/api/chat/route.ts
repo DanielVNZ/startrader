@@ -145,7 +145,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
         stream: true,
         functions,
         function_call: "auto",
-        max_tokens: 500,
+        max_tokens: 2500,
     });
 
     const stream = OpenAIStream(initialResponse, {
@@ -159,7 +159,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
                 model: "gpt-4o",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
-                max_tokens: 500,
+                max_tokens: 2500,
             });
         },
     });
