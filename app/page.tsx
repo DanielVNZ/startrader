@@ -10,6 +10,7 @@ import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
