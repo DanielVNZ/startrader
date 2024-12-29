@@ -126,7 +126,7 @@ ${knowledgeBaseContent}
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
             return openai.chat.completions.create({
-                model: "gpt-4o",
+                model: "gpt-4o-mini",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
             });
