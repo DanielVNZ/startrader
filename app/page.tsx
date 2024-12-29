@@ -5,7 +5,6 @@ import { useChat } from "ai/react";
 import va from "@vercel/analytics";
 import clsx from "clsx";
 import { VercelIcon, GithubIcon, LoadingCircle, SendIcon } from "./icons";
-import { User } from "lucide-react"; // Keep the User icon from lucide-react
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
@@ -70,7 +69,13 @@ export default function Chat() {
                 )}
               >
                 {message.role === "user" ? (
-                  <User width={20} />
+                  <img
+                    src="https://www.svgrepo.com/show/186683/astronaut.svg"
+                    alt="User Icon"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                  />
                 ) : (
                   <img
                     src="https://www.svgrepo.com/show/339963/chat-bot.svg"
