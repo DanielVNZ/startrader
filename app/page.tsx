@@ -72,7 +72,7 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
       {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
