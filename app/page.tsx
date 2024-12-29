@@ -49,6 +49,7 @@ export default function Chat() {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
           href="/deploy"
@@ -81,8 +82,10 @@ export default function Chat() {
               <div className="flex w-full items-start space-x-4">
                 <div
                   className={clsx(
-                    "p-1.5 text-white",
-                    message.role === "assistant" ? "bg-green-500" : "bg-blue-500"
+                    "flex items-center justify-center w-10 h-10 rounded-full p-1.5 text-white",
+                    message.role === "assistant"
+                      ? "bg-green-500"
+                      : "bg-blue-500"
                   )}
                 >
                   {message.role === "user" ? (
