@@ -138,14 +138,18 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
 
 `};
 
+    const MAX_TPM = 30000; // Tokens per minute limit
+    const MAX_OUTPUT_TOKENS = 2500; // Max tokens for the model's output
+    const MAX_INPUT_TOKENS = MAX_TPM - MAX_OUTPUT_TOKENS; // Remaining tokens available for input
+
     // Limit message tokens
-    const calculateTokens = (message : any) => message.content.length / 4; // Rough estimate (1 token = ~4 characters)
-    let totalTokens = 0;
+    const calculateTokens = (message: any) => message.content.length / 4; // Rough estimate (1 token = ~4 characters)
+    let totalTokens = calculateTokens(systemMessage); // Start with systemMessage tokens
     const limitedMessages = [];
 
     for (const message of recentMessages.reverse()) {
         const messageTokens = calculateTokens(message);
-        if (totalTokens + messageTokens > 14000) break;
+        if (totalTokens + messageTokens > MAX_INPUT_TOKENS) break;
         limitedMessages.unshift(message);
         totalTokens += messageTokens;
     }
@@ -158,7 +162,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
         stream: true,
         functions,
         function_call: "auto",
-        max_tokens: 2500,
+        max_tokens: MAX_OUTPUT_TOKENS, // Enforce output token limit
     });
 
     await delay(2000); // Throttle the request to avoid hitting rate limits
@@ -170,12 +174,24 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
         ) => {
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
+
+            // Recalculate tokens to stay within input limits for subsequent calls
+            let totalTokens = calculateTokens(systemMessage);
+            const adjustedMessages = [];
+
+            for (const message of [...extendedMessages, ...newMessages].reverse()) {
+                const messageTokens = calculateTokens(message);
+                if (totalTokens + messageTokens > MAX_INPUT_TOKENS) break;
+                adjustedMessages.unshift(message);
+                totalTokens += messageTokens;
+            }
+
             await delay(2000); // Throttle subsequent requests
             return openai.chat.completions.create({
                 model: "gpt-4o",
                 stream: true,
-                messages: [...extendedMessages, ...newMessages],
-                max_tokens: 2500,
+                messages: adjustedMessages,
+                max_tokens: MAX_OUTPUT_TOKENS,
             });
         },
     });
