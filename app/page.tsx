@@ -72,7 +72,7 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
       {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
@@ -91,7 +91,8 @@ export default function Chat() {
         </a>
       </div>
 
-      <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4">
+      {/* Messages Container */}
+      <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4 pb-20">
         {messages.length > 0 ? (
           messages.map((message, i) => (
             <div
@@ -153,7 +154,7 @@ export default function Chat() {
       </div>
 
       {/* Input Section */}
-      <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
+      <div className="fixed bottom-4 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
         <form
           ref={formRef}
           onSubmit={handleSubmit}
@@ -204,7 +205,7 @@ export default function Chat() {
           onClick={() => setIsDarkMode(!isDarkMode)}
           className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
         >
-          {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          {isDarkMode ? "☀️" : "🌙"}
         </button>
       </div>
     </main>
