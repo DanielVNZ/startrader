@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Star Trader",
   description:
-    "Description Goes Here",
+    "Your home of all trading needs!",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

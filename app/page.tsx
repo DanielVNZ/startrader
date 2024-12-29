@@ -5,7 +5,7 @@ import { useChat } from "ai/react";
 import va from "@vercel/analytics";
 import clsx from "clsx";
 import { VercelIcon, GithubIcon, LoadingCircle, SendIcon } from "./icons";
-import { Bot, User } from "lucide-react";
+import { User } from "lucide-react"; // Keep the User icon from lucide-react
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
@@ -72,7 +72,13 @@ export default function Chat() {
                 {message.role === "user" ? (
                   <User width={20} />
                 ) : (
-                  <Bot width={20} />
+                  <img
+                    src="https://www.svgrepo.com/show/339963/chat-bot.svg"
+                    alt="Chat Bot"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                  />
                 )}
               </div>
               <ReactMarkdown
@@ -97,7 +103,7 @@ export default function Chat() {
             </h1>
             <p className="text-gray-500">Your home of all trading needs!</p>
             <p className="text-gray-500">
-              Want to become a Data Runner? Join here: {" "}
+              Want to become a Data Runner? Join here:{" "}
               <a
                 href="https://uexcorp.space/data/signup"
                 target="_blank"
@@ -108,7 +114,7 @@ export default function Chat() {
               </a>
             </p>
             <p className="text-gray-500">
-              If you would like to support me to keep this bot alive: {" "}
+              If you would like to support me to keep this bot alive:{" "}
               <a
                 href="https://ko-fi.com/danielvnz"
                 target="_blank"
@@ -120,7 +126,6 @@ export default function Chat() {
             </p>
           </div>
         </div>
-      
       )}
       <div className="fixed bottom-0 flex w-full flex-col items-center space-y-3 bg-gradient-to-b from-transparent via-gray-100 to-gray-100 p-5 pb-3 sm:px-0">
         <form
@@ -168,7 +173,7 @@ export default function Chat() {
           </button>
         </form>
         <p className="text-center text-xs text-gray-400">
-          Built with {" "}
+          Built with{" "}
           <a
             href="https://platform.openai.com/docs/guides/gpt/function-calling"
             target="_blank"
@@ -177,7 +182,7 @@ export default function Chat() {
           >
             OpenAI Functions
           </a>{" "}
-          and {" "}
+          and{" "}
           <a
             href="https://sdk.vercel.ai/docs"
             target="_blank"
@@ -186,16 +191,16 @@ export default function Chat() {
           >
             Vercel AI SDK
           </a>
-          . {" "}
+          .{" "}
           <a
-            href="https://github.com/steven-tey/chathn"
+            href="https://github.com/DanielVNZ/startrader"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-black"
           >
             View the repo
           </a>{" "}
-          or {" "}
+          or{" "}
           <a
             href="https://vercel.com/templates/next.js/chathn"
             target="_blank"
