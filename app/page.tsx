@@ -96,7 +96,7 @@ export default function Chat() {
             rel="noopener noreferrer"
             className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            💗 Donate Here 💗
+            💗
           </a>
         </div>
       </div>
