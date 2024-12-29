@@ -72,7 +72,7 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
+    <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
@@ -99,7 +99,7 @@ export default function Chat() {
               className={clsx(
                 "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4 pl-4",
                 message.role === "user"
-                  ? "bg-white dark:bg-gray-800"
+                  ? "bg-gray-100 dark:bg-gray-800"
                   : "bg-gray-100 dark:bg-gray-700"
               )}
             >
