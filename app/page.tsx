@@ -74,22 +74,6 @@ export default function Chat() {
   return (
     <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
       {/* Header */}
-      <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
-        <a
-          href="/deploy"
-          target="_blank"
-          className="rounded-lg p-2 transition-colors duration-200 hover:bg-stone-100 dark:hover:bg-gray-800 sm:bottom-auto"
-        >
-          <VercelIcon />
-        </a>
-        <a
-          href="/github"
-          target="_blank"
-          className="rounded-lg p-2 transition-colors duration-200 hover:bg-stone-100 dark:hover:bg-gray-800 sm:bottom-auto"
-        >
-          <GithubIcon />
-        </a>
-      </div>
 
       {/* Messages Container */}
       <div
@@ -275,7 +259,7 @@ export default function Chat() {
           className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
         >
           <Image
-            src="https://www.svgrepo.com/show/194260/donate.svg"
+            src="https://www.svgrepo.com/show/525839/dollar.svg"
             alt="Donate Icon"
             width={24}
             height={24}
