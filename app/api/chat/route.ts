@@ -12,7 +12,7 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms : number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
