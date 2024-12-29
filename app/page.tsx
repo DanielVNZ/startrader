@@ -175,7 +175,7 @@ export default function Chat() {
             required
             rows={1}
             autoFocus
-            placeholder="How can Star Trader help you today?"
+            placeholder="Send a message"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -208,6 +208,14 @@ export default function Chat() {
             )}
           </button>
         </form>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          {isDarkMode ? "☀️" : "🌙"}
+        </button>
       </div>
     </main>
   );
