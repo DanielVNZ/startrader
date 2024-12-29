@@ -16,6 +16,8 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     // Custom GPT instructions as a system message
+
+    const recentMessages = messages.slice(-10);
     const systemMessage = {
         role: "system",
         content: `
@@ -133,7 +135,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
 `};
 
     // Include all messages without truncation
-    const extendedMessages = [systemMessage, ...messages];
+    const extendedMessages = [systemMessage, ...recentMessages];
 
     const initialResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
