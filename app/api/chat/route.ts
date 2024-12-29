@@ -140,7 +140,7 @@ ${knowledgeBaseContent}
     const extendedMessages = [systemMessage, ...truncatedMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o-mini",
         messages: extendedMessages,
         stream: true,
         functions,
