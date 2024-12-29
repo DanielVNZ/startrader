@@ -84,6 +84,9 @@ export default function Chat() {
             {isDarkMode ? "☀️" : "🌙"}
           </button>
 
+          {/* Page Title */}
+          <h1 className="text-green-500 text-lg font-bold">Star Trader</h1>
+
           {/* Donate Button */}
           <a
             href="https://ko-fi.com/danielvnz"
