@@ -101,7 +101,7 @@ export default function Chat() {
             <div
               key={i}
               className={clsx(
-                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4 pl-4",
+                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4 pl-4 animate-fadeInSlideUp",
                 message.role === "user"
                   ? "bg-gray-100 dark:bg-gray-800"
                   : "bg-gray-100 dark:bg-gray-700"
@@ -161,6 +161,7 @@ export default function Chat() {
         )}
         <div ref={messagesEndRef} />
       </div>
+
 
       {/* Input Section */}
       <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 sm:px-0">
