@@ -163,60 +163,52 @@ export default function Chat() {
       </div>
 
       {/* Input Section */}
-      <div className="fixed bottom-4 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="relative w-full max-w-screen-md rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
-        >
-          <Textarea
-            ref={inputRef}
-            tabIndex={0}
-            required
-            rows={1}
-            autoFocus
-            placeholder="Send a message"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                formRef.current?.requestSubmit();
-                e.preventDefault();
-              }
-            }}
-            spellCheck={false}
-            className="w-full pr-10 focus:outline-none dark:bg-gray-800 dark:text-white"
-          />
-          <button
-            className={clsx(
-              "absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all",
-              disabled
-                ? "cursor-not-allowed bg-white dark:bg-gray-800"
-                : "bg-green-500 hover:bg-green-600"
-            )}
-            disabled={disabled}
-          >
-            {isLoading ? (
-              <LoadingCircle />
-            ) : (
-              <SendIcon
-                className={clsx(
-                  "h-4 w-4",
-                  input.length === 0 ? "text-gray-300" : "text-white"
-                )}
-              />
-            )}
-          </button>
-        </form>
-
-        {/* Toggle Button */}
+    <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 sm:px-0">
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="relative w-full max-w-screen-md rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
+      >
+        <Textarea
+          ref={inputRef}
+          tabIndex={0}
+          required
+          rows={1}
+          autoFocus
+          placeholder="Send a message"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              formRef.current?.requestSubmit();
+              e.preventDefault();
+            }
+          }}
+          spellCheck={false}
+          className="w-full pr-10 focus:outline-none dark:bg-gray-800 dark:text-white"
+        />
         <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          className={clsx(
+            "absolute inset-y-0 right-3 my-auto flex h-8 w-8 items-center justify-center rounded-md transition-all",
+            disabled
+              ? "cursor-not-allowed bg-white dark:bg-gray-800"
+              : "bg-green-500 hover:bg-green-600"
+          )}
+          disabled={disabled}
         >
-          {isDarkMode ? "☀️" : "🌙"}
+          {isLoading ? (
+            <LoadingCircle />
+          ) : (
+            <SendIcon
+              className={clsx(
+                "h-4 w-4",
+                input.length === 0 ? "text-gray-300" : "text-white"
+              )}
+            />
+          )}
         </button>
-      </div>
+      </form>
+    </div>
     </main>
   );
 }
