@@ -135,8 +135,9 @@ ${knowledgeBaseContent}
 
 `};
 
-    // Prepend system message to user messages
-    const extendedMessages = [systemMessage, ...messages];
+    // Limit the number of messages to reduce token usage
+    const truncatedMessages = messages.slice(-5); // Keep only the last 5 messages
+    const extendedMessages = [systemMessage, ...truncatedMessages];
 
     const initialResponse = await openai.chat.completions.create({
         model: "gpt-4",
