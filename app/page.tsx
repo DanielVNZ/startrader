@@ -157,6 +157,56 @@ export default function Chat() {
               Your go-to assistant for planning trade routes and accessing
               accurate commodity prices for specific locations.
             </p>
+            <div className="space-y-2">
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Help improve data:
+                </span>{" "}
+                <a
+                  href="https://uexcorp.space/data/signup"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  https://uexcorp.space/data/signup
+                </a>
+              </p>
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Donate to UEXCORP:
+                </span>{" "}
+                <a
+                  href="https://ko-fi.com/uexcorp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Ko-fi
+                </a>{" "}
+                |{" "}
+                <a
+                  href="https://www.patreon.com/uexcorp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Patreon
+                </a>
+              </p>
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Donate to DanielVNZ (Bot Creator):
+                </span>{" "}
+                <a
+                  href="https://ko-fi.com/danielvnz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Ko-fi
+                </a>
+              </p>
+            </div>
           </div>
         )}
         <div ref={messagesEndRef} />
