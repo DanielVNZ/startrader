@@ -126,6 +126,8 @@ DO NOT ASSUME THAT A LOCATION IS PROFITABLE. YOU MUST USE API VALUES ONLY.
 
 IF A USER ASKS FOR A SELL OR BUY PRICE, DO NOT RESPOND UNTIL YOU HAVE CHECKED THE API.
 
+ALWAYS ENSURE MAX OUTPUT TOKENS ARE UNDER 10000.
+
 ---
 
 #### **Knowledge Base**
@@ -138,7 +140,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
     const extendedMessages = [systemMessage, ...recentMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "o1-2024-12-17",
+        model: "gpt-4o",
         messages: extendedMessages,
         stream: true,
         functions,
@@ -153,7 +155,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
             return openai.chat.completions.create({
-                model: "o1-2024-12-17",
+                model: "gpt-4o",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
             });
