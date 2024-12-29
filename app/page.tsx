@@ -248,7 +248,7 @@ export default function Chat() {
           {/* Dark Mode Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="absolute bottom-5 left-0 ml-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             {isDarkMode ? "☀️" : "🌙"}
           </button>
@@ -258,7 +258,7 @@ export default function Chat() {
             href="https://ko-fi.com/danielvnz"
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="absolute bottom-5 right-0 mr-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             💲💗 Donate Here
           </a>
