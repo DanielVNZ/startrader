@@ -73,7 +73,7 @@ export default function Chat() {
             <div
               key={i}
               className={clsx(
-                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4",
+                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4 pl-4", // Added padding-left here
                 message.role === "user"
                   ? "bg-white dark:bg-gray-800"
                   : "bg-gray-100 dark:bg-gray-700"
