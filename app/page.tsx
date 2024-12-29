@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useChat } from "ai/react";
 import va from "@vercel/analytics";
 import clsx from "clsx";
@@ -9,11 +9,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
+import Image from "next/image";
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null); // Fixed TypeScript type
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -23,7 +24,7 @@ export default function Chat() {
         return;
       } else {
         va.track("Chat initiated");
-        scrollToBottom(); // Scroll to bottom on new response
+        scrollToBottom();
       }
     },
     onError: (error) => {
@@ -36,21 +37,18 @@ export default function Chat() {
 
   const disabled = isLoading || input.length === 0;
 
-  // Function to scroll to the bottom of the chat
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  // Scroll to bottom whenever new messages are added
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
-      {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
           href="/deploy"
@@ -68,7 +66,6 @@ export default function Chat() {
         </a>
       </div>
 
-      {/* Chat Messages Container */}
       <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4">
         {messages.length > 0 ? (
           messages.map((message, i) => (
@@ -89,7 +86,7 @@ export default function Chat() {
                   )}
                 >
                   {message.role === "user" ? (
-                    <img
+                    <Image
                       src="https://www.svgrepo.com/show/186683/astronaut.svg"
                       alt="User Icon"
                       width={20}
@@ -97,9 +94,9 @@ export default function Chat() {
                       className="w-5 h-5"
                     />
                   ) : (
-                    <img
+                    <Image
                       src="https://www.svgrepo.com/show/339963/chat-bot.svg"
-                      alt="Chat Bot"
+                      alt="Chat Bot Icon"
                       width={20}
                       height={20}
                       className="w-5 h-5"
@@ -125,11 +122,9 @@ export default function Chat() {
             <p>Welcome to Star Trader! Start chatting now.</p>
           </div>
         )}
-        {/* Invisible div to ensure scroll to bottom */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Section */}
       <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
         <form
           ref={formRef}
