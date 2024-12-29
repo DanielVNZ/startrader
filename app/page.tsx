@@ -11,12 +11,6 @@ import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 
-const examples = [
-  "Example 1",
-  "Example 2",
-  "Example 3",
-];
-
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -126,6 +120,7 @@ export default function Chat() {
             </p>
           </div>
         </div>
+      
       )}
       <div className="fixed bottom-0 flex w-full flex-col items-center space-y-3 bg-gradient-to-b from-transparent via-gray-100 to-gray-100 p-5 pb-3 sm:px-0">
         <form
