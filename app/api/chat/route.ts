@@ -12,6 +12,8 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
@@ -148,6 +150,8 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
         max_tokens: 2500,
     });
 
+    await delay(2000); // Throttle the request to avoid hitting rate limits
+
     const stream = OpenAIStream(initialResponse, {
         experimental_onFunctionCall: async (
             { name, arguments: args },
@@ -155,6 +159,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
         ) => {
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
+            await delay(2000); // Throttle subsequent requests
             return openai.chat.completions.create({
                 model: "gpt-4o",
                 stream: true,
