@@ -74,6 +74,7 @@ export default function Chat() {
                     alt="User Icon"
                     width={20}
                     height={20}
+                    bg-blue-500
                     className="w-5 h-5"
                   />
                 ) : (
