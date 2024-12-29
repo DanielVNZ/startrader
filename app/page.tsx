@@ -10,6 +10,7 @@ import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -88,6 +89,14 @@ export default function Chat() {
           <h1 className="text-green-500 text-lg font-bold">
             Star Trader - Powered By <a href="https://uexcorp.space" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">UEXCorp.Space</a>
           </h1>
+
+          {/* Change Log and Known Issues Button */}
+          <Link
+            href="./changelogandissues"
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            Change Log and Known Issues
+          </Link>
 
           {/* Donate Button */}
           <a
