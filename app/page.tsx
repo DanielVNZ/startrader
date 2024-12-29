@@ -85,7 +85,9 @@ export default function Chat() {
           </button>
 
           {/* Page Title */}
-          <h1 className="text-green-500 text-lg font-bold">Star Trader</h1>
+          <h1 className="text-green-500 text-lg font-bold">
+            Star Trader - Powered By <a href="https://uexcorp.space" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">UEXCorp.Space</a>
+          </h1>
 
           {/* Donate Button */}
           <a
