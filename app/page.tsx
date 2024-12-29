@@ -19,7 +19,7 @@ export default function Chat() {
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
       if (response.status === 429) {
-        toast.error("You have reached your request limit for the day.");
+        toast.error("You have reached your request limit for the day");
         va.track("Rate limited");
         return;
       } else {
