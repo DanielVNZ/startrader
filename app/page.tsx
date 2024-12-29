@@ -207,6 +207,21 @@ export default function Chat() {
         >
           {isDarkMode ? "☀️" : "🌙"}
         </button>
+
+        {/* Donation Button */}
+        <a
+          href="https://ko-fi.com/danielvnz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-3 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          <Image
+            src="https://www.svgrepo.com/show/333905/donate-heart.svg"
+            alt="Donate"
+            width={24}
+            height={24}
+          />
+        </a>
       </div>
     </main>
   );
