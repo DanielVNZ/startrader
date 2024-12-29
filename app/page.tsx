@@ -34,15 +34,27 @@ export default function Chat() {
 
   const disabled = isLoading || input.length === 0;
 
-  // Dark mode toggle state
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check the initial preference from localStorage or system preference
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") === "dark" ||
+        (!localStorage.getItem("theme") &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ? true
+        : false;
+    }
+    return false;
+  });
 
-  // Persist dark mode preference
+  // Apply the dark mode class
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
 
