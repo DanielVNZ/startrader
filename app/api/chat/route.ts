@@ -12,37 +12,8 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
-async function getKnowledgeBase() {
-  try {
-    const url = "https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvckDbetvpw0dHY6AHjH4cl7TTBU0.txt";
-
-    // Fetch the blob content
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch blob: ${response.statusText}`);
-    }
-
-    // Convert response to text
-    const content = await response.text();
-
-    console.log("Knowledge Base Content:", content);
-    return content;
-  } catch (error) {
-    console.error("Error fetching the knowledge base:", error);
-    throw new Error("Failed to load the knowledge base.");
-  }
-}
-
 export async function POST(req: Request) {
     const { messages } = await req.json();
-
-    let knowledgeBaseContent = "";
-    try {
-        knowledgeBaseContent = await getKnowledgeBase();
-    } catch (error) {
-        knowledgeBaseContent = "Knowledge base could not be loaded. Please try again later.";
-    }
 
     // Custom GPT instructions as a system message
     const systemMessage = {
@@ -93,16 +64,9 @@ Do not proceed without obtaining these details.
 
 ---
 
-#### **Output Standards**
-Ensure all responses adhere to the following:
-- **Accuracy:** Base all recommendations on validated data.
-- **Actionability:** Provide clear, user-focused suggestions.
-- **Transparency:** Explicitly address any limitations or gaps in data.
-
----
-
 #### **Knowledge Base**
-${knowledgeBaseContent}
+For detailed information, refer to the knowledge base at the following link:
+https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvckDbetvpw0dHY6AHjH4cl7TTBU0.txt
 
 `};
 
@@ -126,7 +90,7 @@ ${knowledgeBaseContent}
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
             return openai.chat.completions.create({
-                model: "gpt-4o-mini",
+                model: "gpt-4o",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
             });
