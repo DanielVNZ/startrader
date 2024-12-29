@@ -13,7 +13,7 @@ import { toast } from "sonner";
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef(null); // Ref for auto-scroll to the bottom
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); // Fixed TypeScript type
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -38,7 +38,9 @@ export default function Chat() {
 
   // Function to scroll to the bottom of the chat
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   // Scroll to bottom whenever new messages are added
