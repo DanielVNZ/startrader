@@ -89,25 +89,28 @@ export default function Chat() {
             Star Trader - Powered By <a href="https://uexcorp.space" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">UEXCorp.Space</a>
           </h1>
 
-          {/* Change Log and Known Issues Button */}
-          <a
-            href="/changelogandissues"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            ⚠️
-          </a>
+          {/* Buttons Container */}
+          <div className="flex items-center space-x-2">
+            {/* Change Log and Known Issues Button */}
+            <a
+              href="/changelogandissues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              ⚠️
+            </a>
 
-          {/* Donate Button */}
-          <a
-            href="https://ko-fi.com/danielvnz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            💗
-          </a>
+            {/* Donate Button */}
+            <a
+              href="https://ko-fi.com/danielvnz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              💗
+            </a>
+          </div>
         </div>
       </div>
 
