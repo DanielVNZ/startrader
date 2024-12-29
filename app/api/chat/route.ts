@@ -138,7 +138,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
     const extendedMessages = [systemMessage, ...recentMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "o1",
+        model: "gpt-4o1",
         messages: extendedMessages,
         stream: true,
         functions,
@@ -153,7 +153,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
             const result = await runFunction(name, args);
             const newMessages = createFunctionCallMessages(result);
             return openai.chat.completions.create({
-                model: "o1",
+                model: "gpt-4o1",
                 stream: true,
                 messages: [...extendedMessages, ...newMessages],
             });
