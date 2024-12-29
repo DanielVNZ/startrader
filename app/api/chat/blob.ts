@@ -1,18 +1,18 @@
-import { getBlob } from "@vercel/blob";
+import { get } from "@vercel/blob";
 
 export async function getKnowledgeBase() {
   try {
     const blobName = "Knowledgebase/ReadBeforeAPIQuery.txt";
 
     // Fetch the blob
-    const blob = await getBlob(blobName);
+    const response = await get(blobName);
 
-    if (!blob?.body) {
+    if (!response?.body) {
       throw new Error("Blob content not found.");
     }
 
     // Convert blob body to text
-    const content = await blob.body.text();
+    const content = await response.body.text();
 
     console.log("Knowledge Base Content:", content);
     return content;
