@@ -76,13 +76,24 @@ export default function Chat() {
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            {isDarkMode ? "☀️" : "🌙"}
-          </button>
+          {/* Buttons Container */}
+          <div className="flex items-center space-x-2">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              {isDarkMode ? "☀️" : "🌙"}
+            </button>
+
+            {/* Refresh Button */}
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              🔄
+            </button>
+          </div>
 
           {/* Page Title */}
           <h1 className="text-green-500 text-lg font-bold">
@@ -250,7 +261,7 @@ export default function Chat() {
               required
               rows={1}
               autoFocus
-              placeholder="Send a message"
+              placeholder="How can Star Trader help you today?"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
