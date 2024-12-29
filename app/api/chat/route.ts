@@ -75,7 +75,7 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
     const extendedMessages = [systemMessage, ...truncatedMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: extendedMessages,
         stream: true,
         functions,
