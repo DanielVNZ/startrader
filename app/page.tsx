@@ -13,6 +13,7 @@ import { toast } from "sonner";
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef(null); // Ref for auto-scroll to the bottom
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -22,6 +23,7 @@ export default function Chat() {
         return;
       } else {
         va.track("Chat initiated");
+        scrollToBottom(); // Scroll to bottom on new response
       }
     },
     onError: (error) => {
@@ -34,32 +36,19 @@ export default function Chat() {
 
   const disabled = isLoading || input.length === 0;
 
-  // Dark mode state
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") === "dark" ||
-        (!localStorage.getItem("theme") &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-        ? true
-        : false;
-    }
-    return false;
-  });
+  // Function to scroll to the bottom of the chat
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  // Apply the dark mode class
+  // Scroll to bottom whenever new messages are added
   useEffect(() => {
-    const htmlElement = document.documentElement;
-    if (isDarkMode) {
-      htmlElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      htmlElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
+    scrollToBottom();
+  }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between pb-40 bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen">
+    <main className="flex flex-col items-center justify-between min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      {/* Header */}
       <div className="absolute top-5 hidden w-full justify-between px-5 sm:flex">
         <a
           href="/deploy"
@@ -77,94 +66,69 @@ export default function Chat() {
         </a>
       </div>
 
-      {/* Messages */}
-      {messages.length > 0 ? (
-        messages.map((message, i) => (
-          <div
-            key={i}
-            className={clsx(
-              "flex w-full items-center justify-center border-b border-gray-200 dark:border-gray-700 py-8",
-              message.role === "user"
-                ? "bg-white dark:bg-gray-800"
-                : "bg-gray-100 dark:bg-gray-700"
-            )}
-          >
-            <div className="flex w-full max-w-screen-md items-start space-x-4 px-5 sm:px-0">
-              <div
-                className={clsx(
-                  "p-1.5 text-white",
-                  message.role === "assistant" ? "bg-green-500" : "bg-blue-500"
-                )}
-              >
-                {message.role === "user" ? (
-                  <img
-                    src="https://www.svgrepo.com/show/186683/astronaut.svg"
-                    alt="User Icon"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                ) : (
-                  <img
-                    src="https://www.svgrepo.com/show/339963/chat-bot.svg"
-                    alt="Chat Bot"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
-                )}
+      {/* Chat Messages Container */}
+      <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4">
+        {messages.length > 0 ? (
+          messages.map((message, i) => (
+            <div
+              key={i}
+              className={clsx(
+                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4",
+                message.role === "user"
+                  ? "bg-white dark:bg-gray-800"
+                  : "bg-gray-100 dark:bg-gray-700"
+              )}
+            >
+              <div className="flex w-full items-start space-x-4">
+                <div
+                  className={clsx(
+                    "p-1.5 text-white",
+                    message.role === "assistant" ? "bg-green-500" : "bg-blue-500"
+                  )}
+                >
+                  {message.role === "user" ? (
+                    <img
+                      src="https://www.svgrepo.com/show/186683/astronaut.svg"
+                      alt="User Icon"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                  ) : (
+                    <img
+                      src="https://www.svgrepo.com/show/339963/chat-bot.svg"
+                      alt="Chat Bot"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                  )}
+                </div>
+                <ReactMarkdown
+                  className="prose w-full break-words prose-p:leading-relaxed dark:prose-invert"
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: (props) => (
+                      <a {...props} target="_blank" rel="noopener noreferrer" />
+                    ),
+                  }}
+                >
+                  {message.content}
+                </ReactMarkdown>
               </div>
-              <ReactMarkdown
-                className="prose mt-1 w-full break-words prose-p:leading-relaxed dark:prose-invert"
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: (props) => (
-                    <a {...props} target="_blank" rel="noopener noreferrer" />
-                  ),
-                }}
-              >
-                {message.content}
-              </ReactMarkdown>
             </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500 dark:text-gray-400">
+            <p>Welcome to Star Trader! Start chatting now.</p>
           </div>
-        ))
-      ) : (
-        <div className="border-gray-200 dark:border-gray-700 sm:mx-0 mx-5 mt-20 max-w-screen-md rounded-md border sm:w-full bg-white dark:bg-gray-900">
-          <div className="flex flex-col space-y-4 p-7 sm:p-10">
-            <h1 className="text-lg font-semibold text-black dark:text-white">
-              Welcome to Star Trader!
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Your home of all trading needs!
-            </p>
-            <p className="text-gray-500 dark:text-gray-400">
-              Want to become a Data Runner? Join here:{" "}
-              <a
-                href="https://uexcorp.space/data/signup"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium underline underline-offset-4 transition-colors hover:text-black dark:hover:text-white"
-              >
-                https://uexcorp.space/data/signup
-              </a>
-            </p>
-            <p className="text-gray-500 dark:text-gray-400">
-              If you would like to support me to keep this bot alive:{" "}
-              <a
-                href="https://ko-fi.com/danielvnz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium underline underline-offset-4 transition-colors hover:text-black dark:hover:text-white"
-              >
-                https://ko-fi.com/danielvnz
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
+        )}
+        {/* Invisible div to ensure scroll to bottom */}
+        <div ref={messagesEndRef} />
+      </div>
 
       {/* Input Section */}
-      <div className="fixed bottom-0 flex w-full flex-col items-center space-y-3 bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
+      <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 pb-3 sm:px-0">
         <form
           ref={formRef}
           onSubmit={handleSubmit}
@@ -209,33 +173,6 @@ export default function Chat() {
             )}
           </button>
         </form>
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute left-5 bottom-5 rounded-full bg-gray-200 dark:bg-gray-700 p-2 transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          {isDarkMode ? "☀️" : "🌙"}
-        </button>
-        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
-          Built with{" "}
-          <a
-            href="https://platform.openai.com/docs/guides/gpt/function-calling"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-black dark:hover:text-white"
-          >
-            OpenAI Functions
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://sdk.vercel.ai/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-black dark:hover:text-white"
-          >
-            Vercel AI SDK
-          </a>
-          .
-        </p>
       </div>
     </main>
   );
