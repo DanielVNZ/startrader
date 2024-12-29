@@ -146,9 +146,59 @@ export default function Chat() {
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500 dark:text-gray-400">
-            <p>Welcome to Star Trader! Start chatting now.</p>
-          </div>
+      <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          Welcome to <span className="text-green-500">Star Trader!</span>
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300">
+          Your go-to assistant for planning trade routes and accessing accurate commodity prices for specific locations.
+        </p>
+        <div className="space-y-2">
+          <p className="text-gray-600 dark:text-gray-300">
+            <span className="font-semibold text-gray-800 dark:text-gray-100">Help improve data:</span>{" "}
+            <a
+              href="https://uexcorp.space/data/signup"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+            >
+              https://uexcorp.space/data/signup
+            </a>
+          </p>
+          <p className="text-gray-600 dark:text-gray-300">
+            <span className="font-semibold text-gray-800 dark:text-gray-100">Donate to UEXCORP:</span>{" "}
+            <a
+              href="https://ko-fi.com/uexcorp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+            >
+              Ko-fi
+            </a>{" "}
+            |{" "}
+            <a
+              href="https://www.patreon.com/uexcorp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+            >
+              Patreon
+            </a>
+          </p>
+          <p className="text-gray-600 dark:text-gray-300">
+            <span className="font-semibold text-gray-800 dark:text-gray-100">Donate to DanielVNZ (Bot Creator):</span>{" "}
+            <a
+              href="https://ko-fi.com/danielvnz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+            >
+              Ko-fi
+            </a>
+          </p>
+        </div>
+      </div>
+         
         )}
         <div ref={messagesEndRef} />
       </div>
