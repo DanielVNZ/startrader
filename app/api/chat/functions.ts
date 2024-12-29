@@ -3,7 +3,7 @@ import { CompletionCreateParams } from "openai/resources/chat/index";
 export const functions: CompletionCreateParams.Function[] = [
     {
         name: "get_commodity_prices",
-        description: "Fetch prices for specific commodities based on various query parameters.",
+        description: "Fetch prices for specific commodities based on various query parameters. ote that you MUST use atleast one filter",
         parameters: {
             type: "object",
             properties: {
@@ -29,7 +29,7 @@ export const functions: CompletionCreateParams.Function[] = [
     },
     {
         name: "get_cities",
-        description: "Fetch city data based on optional filters.",
+        description: "Fetch city data based on optional filters. Note that you MUST use atleast one filter",
         parameters: {
             type: "object",
             properties: {
@@ -55,7 +55,7 @@ export const functions: CompletionCreateParams.Function[] = [
     },
     {
         name: "get_terminals",
-        description: "Fetch terminal data based on optional filters.",
+        description: "Fetch terminal data based on optional filters. ote that you MUST use atleast one filter",
         parameters: {
             type: "object",
             properties: {
