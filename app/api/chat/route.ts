@@ -62,6 +62,8 @@ Before executing API queries, confirm:
 
 Do not proceed without obtaining these details.
 
+DO NOT ASSUME THAT A LOCATION IS PROFITABLE. YOU MUST USE API VALUES ONLY. 
+
 ---
 
 #### **Knowledge Base**
@@ -70,9 +72,8 @@ https://q6l7tsoql2egvz2m.public.blob.vercel-storage.com/ReadBeforeAPIQuery-CEvck
 
 `};
 
-    // Limit the number of messages to reduce token usage
-    const truncatedMessages = messages.slice(-5); // Keep only the last 5 messages
-    const extendedMessages = [systemMessage, ...truncatedMessages];
+    // Include all messages without truncation
+    const extendedMessages = [systemMessage, ...messages];
 
     const initialResponse = await openai.chat.completions.create({
         model: "gpt-4o",
