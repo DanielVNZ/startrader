@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { useChat } from "ai/react";
 import va from "@vercel/analytics";
 import clsx from "clsx";
-import { VercelIcon, GithubIcon, LoadingCircle, SendIcon } from "./icons";
+import { LoadingCircle, SendIcon } from "./icons";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
