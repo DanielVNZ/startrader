@@ -91,25 +91,25 @@ async function get_commodities() {
     return await response.json();
 }
 
-async function get_commodity_prices(queryParams = {}) {
+async function get_commodity_prices(queryParams: Record<string, any> = {}) {
     const queryString = new URLSearchParams(queryParams).toString();
     const response = await fetch(`https://api.uexcorp.space/2.0/commodities_prices?${queryString}`);
     return await response.json();
 }
 
-async function get_cities(queryParams = {}) {
+async function get_cities(queryParams: Record<string, any> = {}) {
     const queryString = new URLSearchParams(queryParams).toString();
     const response = await fetch(`https://api.uexcorp.space/2.0/cities?${queryString}`);
     return await response.json();
 }
 
-async function get_terminals(queryParams = {}) {
+async function get_terminals(queryParams: Record<string, any> = {}) {
     const queryString = new URLSearchParams(queryParams).toString();
     const response = await fetch(`https://api.uexcorp.space/2.0/terminals?${queryString}`);
     return await response.json();
 }
 
-export async function runFunction(name, args) {
+export async function runFunction(name: string, args: Record<string, any>) {
     switch (name) {
         case "get_commodities":
             return await get_commodities();
@@ -120,6 +120,6 @@ export async function runFunction(name, args) {
         case "get_terminals":
             return await get_terminals(args);
         default:
-            return null;
+            throw new Error(`Function ${name} is not defined.`);
     }
 }
