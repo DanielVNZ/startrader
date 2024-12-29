@@ -85,7 +85,7 @@ export default function Chat() {
           </button>
 
           {/* Page Title */}
-          <h1 className="text-green-800 text-lg font-bold">Star Trader</h1>
+          <h1 className="text-green-700 text-lg font-bold">Star Trader</h1>
 
           {/* Donate Button */}
           <a
