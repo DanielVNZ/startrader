@@ -2,15 +2,6 @@ import { CompletionCreateParams } from "openai/resources/chat/index";
 
 export const functions: CompletionCreateParams.Function[] = [
     {
-        name: "get_commodities",
-        description: "Fetch a list of commodities available in the UEX database.",
-        parameters: {
-            type: "object",
-            properties: {},
-            required: [],
-        },
-    },
-    {
         name: "get_commodity_prices",
         description: "Fetch prices for specific commodities based on various query parameters.",
         parameters: {
