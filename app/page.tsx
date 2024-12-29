@@ -10,7 +10,6 @@ import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
