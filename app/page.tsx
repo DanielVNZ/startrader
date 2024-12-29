@@ -196,12 +196,12 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Section */}
-      <div className="fixed bottom-0 flex w-full flex-col items-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 p-5 sm:px-0">
+      {/* Footer Section */}
+      <div className="fixed bottom-0 w-full flex items-center justify-center bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className="relative w-full max-w-screen-md rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
+          className="relative flex-1 max-w-screen-md rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
         >
           <Textarea
             ref={inputRef}
@@ -243,23 +243,26 @@ export default function Chat() {
           </button>
         </form>
 
-        {/* Toggle Button */}
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute bottom-5 left-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          {isDarkMode ? "☀️" : "🌙"}
-        </button>
+        {/* Buttons Container */}
+        <div className="flex gap-4 mt-3 sm:mt-0">
+          {/* Toggle Button */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            {isDarkMode ? "☀️" : "🌙"}
+          </button>
 
-        {/* Donate Button */}
-        <a
-          href="https://ko-fi.com/danielvnz"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute bottom-5 right-5 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          💲💗 Donate Here 
-        </a>
+          {/* Donate Button */}
+          <a
+            href="https://ko-fi.com/danielvnz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+          >
+            💲💗 Donate Here
+          </a>
+        </div>
       </div>
     </main>
   );
