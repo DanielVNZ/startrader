@@ -11,7 +11,6 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
         console.log(`Starting cleanup for folders in prefix: ${prefix}`);
         const blobs = await list({ prefix }); // Retrieves all blobs matching the prefix
 
-        // Extract unique folder names from the listed blobs
         const folders = new Set(
             blobs.blobs.map((blob) => {
                 const parts = blob.pathname.split("/");
@@ -27,7 +26,6 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             console.log(`Checking folder: ${folder}`);
 
-            // Extract numeric timestamp from the folder name
             const match = folder.match(/cache\/(\d+)/); // Matches "cache/<timestamp>"
             const folderTimestamp = match ? Number(match[1]) : NaN;
 
@@ -40,8 +38,7 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             if (folderAge > maxAge) {
                 console.log(`Deleting old folder: ${folder}, age: ${folderAge}ms`);
-                
-                // List all files under the folder prefix
+
                 const folderFiles = await list({ prefix: folder });
                 for (const file of folderFiles.blobs) {
                     console.log(`Deleting file: ${file.pathname}`);
@@ -68,7 +65,6 @@ async function setCache(key: string, data: any) {
         expiry: timestamp + CACHE_TTL,
     };
 
-    // Store the cache entry inside the timestamped folder
     await put(`${folderName}/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
@@ -76,30 +72,24 @@ async function setCache(key: string, data: any) {
 
     console.log(`Cache entry stored in folder: ${folderName}`);
 
-    // Cleanup old folders in the cache directory
     await deleteOldFiles("cache/", CACHE_TTL);
 }
-
 
 async function getCache(key: string): Promise<any | null> {
     const sanitizedKey = sanitizeKey(key);
 
-    // List blobs with the matching prefix
     const blobs = await list({ prefix: `cache/${sanitizedKey}` });
 
-    // Use `pathname` to match the blob
     const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}`);
 
     if (blob) {
-        const response = await fetch(blob.url); // Fetch blob content using `url`
+        const response = await fetch(blob.url);
         const content = await response.text();
         const cacheEntry = JSON.parse(content);
 
-        // Check expiry
         if (Date.now() < cacheEntry.expiry) {
             return cacheEntry.data;
         } else {
-            // Cache expired, delete it
             await del(`cache/${sanitizedKey}`);
         }
     }
@@ -109,19 +99,16 @@ async function getCache(key: string): Promise<any | null> {
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
     const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
 
-    // Check cache first
     const cachedData = await getCache(cacheKey);
     if (cachedData) {
         console.log(`Cache hit for ${cacheKey}`);
         return cachedData;
     }
 
-    // Fetch from API
     const queryString = new URLSearchParams(queryParams).toString();
     const response = await fetch(`${endpoint}?${queryString}`);
     const data = await response.json();
 
-    // Store in cache
     await setCache(cacheKey, data);
     return data;
 }
@@ -203,217 +190,217 @@ export async function runFunction(name: string, args: Record<string, any>) {
 // OpenAI Functions Array
 export const functions = [
     {
-         name: "data_extract",
-         description: "obtain the top 30 commodities routes according to UEX. make sure to add that all values are estimated when providing from this API",
+        "name": "data_extract",
+        "description": "Obtain the top 30 commodities routes according to UEX. Make sure to add that all values are estimated when providing from this API."
     },
     {
-         name: "get_commodities",
-         description: "Fetch a list of all commodites include specifics about each commodity like if its buyable or sellable, if its illegal is it raw or refined and average market price.",
+        "name": "get_commodities",
+        "description": "Fetch a list of all commodities, including specifics about each commodity, like if it is buyable or sellable, if it is illegal, is it raw or refined, and average market price."
     },
     {
-         name: "get_commodities_prices_all",
-         description: "Fetch a list of all commodity prices, what terminal its att, buy sell prices",
+        "name": "get_commodities_prices_all",
+        "description": "Fetch a list of all commodity prices, what terminal they are at, and buy/sell prices."
     },
     {
-         name: "get_commodities_raw_prices_all",
-         description: "Fetch a list of all raw commodity prices, what terminal its att, buy sell prices",
+        "name": "get_commodities_raw_prices_all",
+        "description": "Fetch a list of all raw commodity prices, what terminal they are at, and buy/sell prices."
     },
     {
-         name: "get_commodity_prices",
-         description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its commodity code.",
-         parameters: {
-            type: "object",
-             properties: {
-                 id_terminal: {
-                     type: "string",
-                     description: "Comma-separated terminal IDs (e.g., '1,2,3')."
+        "name": "get_commodity_prices",
+        "description": "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property. Do not run this API without at least one property. If you don't have it, check your knowledge base to compare the commodity provided to find its commodity code.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_terminal": {
+                    "type": "string",
+                    "description": "Comma-separated terminal IDs (e.g., '1,2,3')."
                 },
-                 id_commodity: {
-                     type: "integer",
-                     description: "The ID of the commodity."
+                "id_commodity": {
+                    "type": "integer",
+                    "description": "The ID of the commodity."
                 },
-                 terminal_name: {
-                     type: "string",
-                     description: "The name of the terminal."
+                "terminal_name": {
+                    "type": "string",
+                    "description": "The name of the terminal."
                 },
-                 commodity_name: {
-                     type: "string",
-                     description: "The name of the commodity."
+                "commodity_name": {
+                    "type": "string",
+                    "description": "The name of the commodity."
                 },
-                 terminal_code: {
-                     type: "string",
-                     description: "The code of the terminal."
+                "terminal_code": {
+                    "type": "string",
+                    "description": "The code of the terminal."
                 },
-                 commodity_code: {
-                     type: "string",
-                     description: "The code of the commodity. PRIORITIZE USING THIS. All commodity codes are in your knowledge base."
+                "commodity_code": {
+                    "type": "string",
+                    "description": "The code of the commodity. PRIORITIZE USING THIS. All commodity codes are in your knowledge base."
                 }
             },
-             required: [] // No required properties in schema
+            "required": []
         }
     },
     {
-        name: "get_cities",
-        description: "Fetch city data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_cities",
+        "description": "Fetch city data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
+                "id_planet": {
+                    "type": "integer",
+                    "description": "Planet ID."
                 },
-                id_orbit: {
-                    type: "integer",
-                    description: "Orbit ID.",
+                "id_orbit": {
+                    "type": "integer",
+                    "description": "Orbit ID."
                 },
-                id_moon: {
-                    type: "integer",
-                    description: "Moon ID.",
-                },
+                "id_moon": {
+                    "type": "integer",
+                    "description": "Moon ID."
+                }
             },
-            required: [],
-        },
+            "required": []
+        }
     },
     {
-        name: "get_terminals",
-        description: "Fetch terminal data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_terminals",
+        "description": "Fetch terminal data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
+                "id_planet": {
+                    "type": "integer",
+                    "description": "Planet ID."
                 },
-                name: {
-                    type: "string",
-                    description: "Terminal name.",
-                },
+                "name": {
+                    "type": "string",
+                    "description": "Terminal name."
+                }
             },
-            required: [],
-        },
+            "required": []
+        }
     },
     {
-        name: "get_planets",
-        description: "Fetch planet data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_planets",
+        "description": "Fetch planet data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
+                "id_faction": {
+                    "type": "integer",
+                    "description": "Faction ID."
                 },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
+                "id_jurisdiction": {
+                    "type": "integer",
+                    "description": "Jurisdiction ID."
                 },
-                is_lagrange: {
-                    type: "integer",
-                    description: "Filter for Lagrange points.",
-                },
+                "is_lagrange": {
+                    "type": "integer",
+                    "description": "Filter for Lagrange points."
+                }
             },
-            required: [],
-        },
+            "required": []
+        }
     },
     {
-        name: "get_moons",
-        description: "Fetch moon data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_moons",
+        "description": "Fetch moon data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
+                "id_planet": {
+                    "type": "integer",
+                    "description": "Planet ID."
                 },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
+                "id_faction": {
+                    "type": "integer",
+                    "description": "Faction ID."
                 },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
+                "id_jurisdiction": {
+                    "type": "integer",
+                    "description": "Jurisdiction ID."
+                }
             },
-            required: [],
-        },
+            "required": []
+        }
     },
     {
-        name: "get_orbits",
-        description: "Fetch orbit data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_orbits",
+        "description": "Fetch orbit data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
+                "id_faction": {
+                    "type": "integer",
+                    "description": "Faction ID."
                 },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
+                "id_jurisdiction": {
+                    "type": "integer",
+                    "description": "Jurisdiction ID."
                 },
-                is_lagrange: {
-                    type: "integer",
-                    description: "Filter for Lagrange points.",
-                },
+                "is_lagrange": {
+                    "type": "integer",
+                    "description": "Filter for Lagrange points."
+                }
             },
-            required: [],
-        },
+            "required": []
+        }
     },
     {
-        name: "get_space_stations",
-        description: "Fetch space station data based on optional filters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
+        "name": "get_space_stations",
+        "description": "Fetch space station data based on optional filters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_star_system": {
+                    "type": "integer",
+                    "description": "Star system ID."
                 },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
+                "id_planet": {
+                    "type": "integer",
+                    "description": "Planet ID."
                 },
-                id_orbit: {
-                    type: "integer",
-                    description: "Orbit ID.",
+                "id_orbit": {
+                    "type": "integer",
+                    "description": "Orbit ID."
                 },
-                id_moon: {
-                    type: "integer",
-                    description: "Moon ID.",
+                "id_moon": {
+                    "type": "integer",
+                    "description": "Moon ID."
                 },
-                id_city: {
-                    type: "integer",
-                    description: "City ID.",
+                "id_city": {
+                    "type": "integer",
+                    "description": "City ID."
                 },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
+                "id_faction": {
+                    "type": "integer",
+                    "description": "Faction ID."
                 },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
+                "id_jurisdiction": {
+                    "type": "integer",
+                    "description": "Jurisdiction ID."
+                }
             },
-            required: [],
-        },
-    },
+            "required": []
+        }
+    }
 ];
