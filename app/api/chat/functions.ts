@@ -2,25 +2,32 @@ import { put, del, list } from "@vercel/blob"; // Correct imports
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
+function sanitizeKey(key: string): string {
+    return encodeURIComponent(key); // Encode the key to make it URL-safe
+}
+
 async function setCache(key: string, data: any) {
+    const sanitizedKey = sanitizeKey(key);
     const cacheEntry = {
         data,
         expiry: Date.now() + CACHE_TTL,
     };
 
     // Store in Vercel Blob Storage
-    await put(`cache/${key}`, JSON.stringify(cacheEntry), {
+    await put(`cache/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
     });
 }
 
 async function getCache(key: string): Promise<any | null> {
+    const sanitizedKey = sanitizeKey(key);
+
     // List blobs with the matching prefix
-    const blobs = await list({ prefix: `cache/${key}` });
+    const blobs = await list({ prefix: `cache/${sanitizedKey}` });
 
     // Use `pathname` to match the blob
-    const blob = blobs.blobs.find((b) => b.pathname === `cache/${key}`);
+    const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}`);
 
     if (blob) {
         const response = await fetch(blob.url); // Fetch blob content using `url`
@@ -32,12 +39,11 @@ async function getCache(key: string): Promise<any | null> {
             return cacheEntry.data;
         } else {
             // Cache expired, delete it
-            await del(`cache/${key}`);
+            await del(`cache/${sanitizedKey}`);
         }
     }
     return null;
 }
-
 
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
     const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
