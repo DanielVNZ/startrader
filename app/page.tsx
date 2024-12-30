@@ -11,10 +11,16 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
+// Import Vanta.js and Three.js
+import * as THREE from "three";
+import WAVES from "vanta/dist/vanta.waves.min";
+
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const vantaRef = useRef<HTMLDivElement | null>(null);
+  const [vantaEffect, setVantaEffect] = useState<any>(null);
   const [showDonateModal, setShowDonateModal] = useState(false);
   const [usageCost, setUsageCost] = useState<number | null>(null);
 
@@ -92,6 +98,30 @@ export default function Chat() {
     }
   }, [isDarkMode]);
 
+  // Initialize Vanta.js Waves Effect
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        WAVES({
+          el: vantaRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          color: isDarkMode ? 0x2450 : 0x959af,
+          THREE,
+        })
+      );
+    }
+
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [isDarkMode, vantaEffect]);
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -104,14 +134,8 @@ export default function Chat() {
 
   return (
     <main
+      ref={vantaRef}
       className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
-      style={{
-        backgroundImage: `url(${isDarkMode
-          ? "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='3840' height='2160' preserveAspectRatio='none' viewBox='0 0 3840 2160'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1101%26quot%3b)' fill='none'%3e%3crect width='3840' height='2160' x='0' y='0' fill='rgba(2%2c 28%2c 57%2c 1)'%3e%3c/rect%3e%3cpath d='M0%2c1340.797C345.725%2c1359.256%2c670.902%2c1668.946%2c995.939%2c1549.711C1323.171%2c1429.671%2c1559.58%2c1085.29%2c1628.133%2c743.543C1693.621%2c417.076%2c1404.411%2c134.268%2c1345.613%2c-193.47C1289.805%2c-504.547%2c1490.44%2c-873.654%2c1293.636%2c-1120.942C1097.569%2c-1367.303%2c705.415%2c-1284.891%2c404.155%2c-1376.426C99.157%2c-1469.096%2c-187.775%2c-1769.161%2c-488.096%2c-1662.302C-790.91%2c-1554.556%2c-818.652%2c-1133.212%2c-1008.426%2c-873.806C-1177.682%2c-642.445%2c-1449.71%2c-493.108%2c-1541.992%2c-221.705C-1643.579%2c77.065%2c-1654.211%2c409.557%2c-1545.526%2c705.818C-1432.632%2c1013.552%2c-1233.056%2c1322.322%2c-929.86%2c1446.89C-635.336%2c1567.895%2c-317.96%2c1323.821%2c0%2c1340.797' fill='%23011429'%3e%3c/path%3e%3cpath d='M3840 3631.398C4123.724 3629.7780000000002 4411.474 3573.699 4644.5380000000005 3411.886 4873.439 3252.9629999999997 5004.36 2998.084 5118.396 2743.824 5231.772 2491.036 5296.7919999999995 2227.087 5300.171 1950.059 5304.03 1633.71 5304.642 1303.893 5139.25 1034.194 4960.669 742.9870000000001 4694.361 441.96399999999994 4354.459 407.91499999999996 4014.274 373.83799999999997 3782.595 752.6400000000001 3460.042 865.983 3162.46 970.5509999999999 2766.0969999999998 812.4570000000001 2549.821 1042.053 2334.487 1270.6480000000001 2479.295 1647.0990000000002 2431.815 1957.534 2383.7650000000003 2271.7 2148.951 2583.172 2269.1130000000003 2877.4 2389.359 3171.835 2742.809 3283.486 3029.534 3421.109 3286.3540000000003 3544.3779999999997 3555.134 3633.025 3840 3631.398' fill='%23032449'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1101'%3e%3crect width='3840' height='2160' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e"
-          : "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='3840' height='2160' preserveAspectRatio='none' viewBox='0 0 3840 2160'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1099%26quot%3b)' fill='none'%3e%3crect width='3840' height='2160' x='0' y='0' fill='rgba(104%2c 148%2c 197%2c 1)'%3e%3c/rect%3e%3cpath d='M0%2c1340.797C345.725%2c1359.256%2c670.902%2c1668.946%2c995.939%2c1549.711C1323.171%2c1429.671%2c1559.58%2c1085.29%2c1628.133%2c743.543C1693.621%2c417.076%2c1404.411%2c134.268%2c1345.613%2c-193.47C1289.805%2c-504.547%2c1490.44%2c-873.654%2c1293.636%2c-1120.942C1097.569%2c-1367.303%2c705.415%2c-1284.891%2c404.155%2c-1376.426C99.157%2c-1469.096%2c-187.775%2c-1769.161%2c-488.096%2c-1662.302C-790.91%2c-1554.556%2c-818.652%2c-1133.212%2c-1008.426%2c-873.806C-1177.682%2c-642.445%2c-1449.71%2c-493.108%2c-1541.992%2c-221.705C-1643.579%2c77.065%2c-1654.211%2c409.557%2c-1545.526%2c705.818C-1432.632%2c1013.552%2c-1233.056%2c1322.322%2c-929.86%2c1446.89C-635.336%2c1567.895%2c-317.96%2c1323.821%2c0%2c1340.797' fill='%233c6a9d'%3e%3c/path%3e%3cpath d='M3840 3631.398C4123.724 3629.7780000000002 4411.474 3573.699 4644.5380000000005 3411.886 4873.439 3252.9629999999997 5004.36 2998.084 5118.396 2743.824 5231.772 2491.036 5296.7919999999995 2227.087 5300.171 1950.059 5304.03 1633.71 5304.642 1303.893 5139.25 1034.194 4960.669 742.9870000000001 4694.361 441.96399999999994 4354.459 407.91499999999996 4014.274 373.83799999999997 3782.595 752.6400000000001 3460.042 865.983 3162.46 970.5509999999999 2766.0969999999998 812.4570000000001 2549.821 1042.053 2334.487 1270.6480000000001 2479.295 1647.0990000000002 2431.815 1957.534 2383.7650000000003 2271.7 2148.951 2583.172 2269.1130000000003 2877.4 2389.359 3171.835 2742.809 3283.486 3029.534 3421.109 3286.3540000000003 3544.3779999999997 3555.134 3633.025 3840 3631.398' fill='%23a5bfdc'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1099'%3e%3crect width='3840' height='2160' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
     >
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
