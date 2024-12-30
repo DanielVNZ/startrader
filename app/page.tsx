@@ -15,6 +15,7 @@ export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [showDonateModal, setShowDonateModal] = useState(false);
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -113,14 +114,12 @@ export default function Chat() {
             </a>
 
             {/* Donate Button */}
-            <a
-              href="https://ko-fi.com/danielvnz"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setShowDonateModal(true)}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               💗
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -245,6 +244,27 @@ export default function Chat() {
         )}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Donation Modal */}
+      {showDonateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <button
+              onClick={() => setShowDonateModal(false)}
+              className="absolute top-2 right-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              ✖
+            </button>
+            <iframe
+              id="kofiframe"
+              src="https://ko-fi.com/danielvnz/?hidefeed=true&widget=true&embed=true&preview=true"
+              style={{ border: "none", width: "100%", padding: "4px", background: "#f9f9f9" }}
+              height="712"
+              title="danielvnz"
+            ></iframe>
+          </div>
+        </div>
+      )}
 
       {/* Footer Section */}
       <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
