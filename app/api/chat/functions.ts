@@ -159,6 +159,10 @@ async function get_cities(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
 }
 
+async function get_all_terminals(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals");
+}
+
 async function get_terminals(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/terminals", queryParams);
 }
@@ -192,6 +196,8 @@ export async function runFunction(name: string, args: Record<string, any>) {
             return await get_cities(args);
         case "get_terminals":
             return await get_terminals(args);
+        case "get_all_terminals":
+            return await get_all_terminals(args);
         case "get_planets":
             return await get_planets(args);
         case "get_moons":
@@ -227,6 +233,10 @@ export const functions = [
          name: "get_commodities_raw_prices_all",
          description: "Fetch a list of all raw commodity prices, what terminal its att, buy sell prices",
     },
+    {
+        name: "get_all_terminals",
+        description: "Fetch a list of all terminal information",
+   },
     {
          name: "get_commodity_prices",
          description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its commodity code.",
