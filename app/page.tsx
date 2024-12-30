@@ -16,6 +16,7 @@ export default function Chat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [showDonateModal, setShowDonateModal] = useState(false);
+  const [usageCost, setUsageCost] = useState<number | null>(null);
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -49,6 +50,35 @@ export default function Chat() {
     }
     return false;
   });
+
+  // Fetch daily usage cost
+  useEffect(() => {
+    async function fetchUsage() {
+      try {
+        const today = new Date().toISOString().split("T")[0]; // Get today's date
+        const response = await fetch(
+          `https://api.openai.com/v1/dashboard/billing/usage?start_date=${today}&end_date=${today}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your API key securely
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const totalUsage = data.total_usage || 0;
+          setUsageCost(totalUsage / 100); // Convert from cents to dollars
+        } else {
+          console.error("Failed to fetch usage:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error fetching usage:", error);
+      }
+    }
+
+    fetchUsage();
+  }, []);
 
   // Apply the Dark/Light mode to the html element
   useEffect(() => {
@@ -98,8 +128,25 @@ export default function Chat() {
 
           {/* Page Title */}
           <h1 className="text-green-500 text-lg font-bold">
-            Star Trader - Powered By <a href="https://uexcorp.space" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">UEXCorp.Space</a>
+            Star Trader - Powered By{" "}
+            <a
+              href="https://uexcorp.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-green-700"
+            >
+              UEXCorp.Space
+            </a>
           </h1>
+
+          {/* Usage Counter */}
+          <div className="text-right">
+            {usageCost !== null && (
+              <div className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-full px-3 py-1 shadow-md">
+                Usage: <span className="font-bold">${usageCost.toFixed(2)}</span>
+              </div>
+            )}
+          </div>
 
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
@@ -258,7 +305,12 @@ export default function Chat() {
             <iframe
               id="kofiframe"
               src="https://ko-fi.com/danielvnz/?hidefeed=true&widget=true&embed=true&preview=true"
-              style={{ border: "none", width: "100%", padding: "4px", background: "#f9f9f9" }}
+              style={{
+                border: "none",
+                width: "100%",
+                padding: "4px",
+                background: "#f9f9f9",
+              }}
               height="712"
               title="danielvnz"
             ></iframe>
