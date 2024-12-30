@@ -6,6 +6,35 @@ function sanitizeKey(key: string): string {
     return encodeURIComponent(key); // Encode the key to make it URL-safe
 }
 
+async function deleteOldFiles(prefix: string, maxAge: number) {
+    try {
+        console.log(`Starting cleanup for files in prefix: ${prefix}`);
+        const blobs = await list({ prefix });
+        const now = Date.now();
+        const deletedFiles = [];
+
+        for (const blob of blobs.blobs) {
+            const { pathname } = blob;
+
+            // Extract timestamp from the filename or fallback to "now"
+            const parts = pathname.split("_");
+            const lastModified = parts.length > 1 ? Number(parts[0]) : now;
+
+            const fileAge = now - lastModified;
+
+            if (fileAge > maxAge) {
+                console.log(`Deleting old file: ${pathname}, age: ${fileAge}ms`);
+                await del(pathname); // Delete the file using @vercel/blob's del function
+                deletedFiles.push(pathname);
+            }
+        }
+
+        console.log("Cleanup complete. Deleted files:", deletedFiles);
+    } catch (error) {
+        console.error("Error during cleanup of old files:", error);
+    }
+}
+
 async function setCache(key: string, data: any) {
     const sanitizedKey = sanitizeKey(key);
     const cacheEntry = {
@@ -13,11 +42,14 @@ async function setCache(key: string, data: any) {
         expiry: Date.now() + CACHE_TTL,
     };
 
-    // Store in Vercel Blob Storage
+    // Store the cache entry
     await put(`cache/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
     });
+
+    // Cleanup old files in the cache folder
+    await deleteOldFiles("cache/", CACHE_TTL);
 }
 
 async function getCache(key: string): Promise<any | null> {
@@ -73,7 +105,6 @@ async function get_commodities() {
 async function get_commodity_prices(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
 }
-
 
 async function get_cities(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
