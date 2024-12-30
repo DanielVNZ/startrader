@@ -87,9 +87,10 @@ export default function ChangelogAndIssues() {
             Recent Changelog
           </h2>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+            <li><strong>v1.0.3</strong> - Dialed up the "fun" level, added API caching for up to 60 minutes to reduce API calls while retaining data accuracy(30-12-2024 - 2)</li>
             <li><strong>v1.0.2</strong> - Added more UI buttons/Donation Information (30-12-2024)</li>
-            <li><strong>v1.0.1</strong> - Fixed dark mode toggle bug. (29-12-2024)</li>
-            <li><strong>v1.0.0</strong> - Initial release of the chat application. (29-12-2024)</li>
+            <li><strong>v1.0.1</strong> - Fixed dark mode toggle bug. (29-12-2024 - 2)</li>
+            <li><strong>v1.0.0</strong> - Initial release of the chat application (29-12-2024)</li>
           </ul>
         </section>
 
