@@ -11,7 +11,7 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
-// Import Three.js and Vanta.js
+// Importing Vanta.js and Three.js
 import * as THREE from "three";
 import WAVES from "vanta/dist/vanta.waves.min";
 
@@ -57,6 +57,35 @@ export default function Chat() {
     return false;
   });
 
+  // Fetch daily usage cost
+  useEffect(() => {
+    async function fetchUsage() {
+      try {
+        const today = new Date().toISOString().split("T")[0]; // Get today's date
+        const response = await fetch(
+          `https://api.openai.com/v1/dashboard/billing/usage?start_date=${today}&end_date=${today}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your API key securely
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const totalUsage = data.total_usage || 0;
+          setUsageCost(totalUsage / 100); // Convert from cents to dollars
+        } else {
+          console.error("Failed to fetch usage:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error fetching usage:", error);
+      }
+    }
+
+    fetchUsage();
+  }, []);
+
   // Apply the Dark/Light mode to the html element
   useEffect(() => {
     const htmlElement = document.documentElement;
@@ -74,7 +103,7 @@ export default function Chat() {
     if (!vantaEffect && vantaRef.current) {
       setVantaEffect(
         WAVES({
-          el: vantaRef.current,
+          el: vantaRef.current, // Attach Vanta.js to the main container
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -82,14 +111,14 @@ export default function Chat() {
           minWidth: 200.0,
           scale: 1.0,
           scaleMobile: 1.0,
-          color: isDarkMode ? 0x2450 : 0x959af,
-          THREE: THREE, // Explicitly pass the Three.js instance
+          color: isDarkMode ? 0x2450 : 0x959af, // Adjust color based on theme
+          THREE: THREE, // Explicitly pass Three.js instance
         })
       );
     }
 
     return () => {
-      if (vantaEffect) vantaEffect.destroy(); // Clean up Vanta effect on unmount
+      if (vantaEffect) vantaEffect.destroy(); // Clean up Vanta.js effect on unmount
     };
   }, [isDarkMode, vantaEffect]);
 
@@ -104,7 +133,10 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main ref={vantaRef} className="relative min-h-screen text-black dark:text-white">
+    <main
+      ref={vantaRef} // Reference for Vanta.js
+      className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
+    >
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
