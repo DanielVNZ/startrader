@@ -75,6 +75,7 @@ export default function ChangelogAndIssues() {
               target="_blank"
               rel="noopener noreferrer"
             >
+              &nbsp;
                Here
             </a>
           </p>
