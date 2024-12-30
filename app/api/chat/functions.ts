@@ -8,63 +8,67 @@ function sanitizeKey(key: string): string {
 
 async function deleteOldFiles(prefix: string, maxAge: number) {
     try {
-        console.log(`Starting cleanup for files in prefix: ${prefix}`);
-        const blobs = await list({ prefix }); // Retrieves all files starting with the prefix
+        console.log(`Starting cleanup for folders in prefix: ${prefix}`);
+        const blobs = await list({ prefix }); // Retrieves all blobs matching the prefix
 
-        // Debug log: List all files found
-        if (blobs.blobs.length === 0) {
-            console.log("No files found within the prefix.");
-        } else {
-            console.log("Files found in cache:");
-            blobs.blobs.forEach((blob) => console.log(` - ${blob.pathname}`));
-        }
+        // Extract unique folder names from the listed blobs
+        const folders = new Set(
+            blobs.blobs.map((blob) => {
+                const parts = blob.pathname.split("/");
+                return parts.length > 1 ? `${parts[0]}/${parts[1]}` : null;
+            })
+        );
 
         const now = Date.now();
-        const deletedFiles = [];
+        const deletedFolders = [];
 
-        for (const blob of blobs.blobs) {
-            const { pathname } = blob;
+        for (const folder of folders) {
+            if (!folder) continue; // Skip invalid entries
+            const parts = folder.split("/");
+            const folderTimestamp = Number(parts[1]); // Extract timestamp
 
-            console.log(`Checking file: ${pathname}`);
+            if (isNaN(folderTimestamp)) {
+                console.log(`Skipping non-timestamped folder: ${folder}`);
+                continue;
+            }
 
-            // Extract timestamp from the filename (assumes format: "timestamp_key")
-            const parts = pathname.split("_");
-            const lastModified = parts.length > 1 ? Number(parts[0].replace("cache/", "")) : now;
+            const folderAge = now - folderTimestamp;
 
-            const fileAge = now - lastModified;
-
-            if (fileAge > maxAge) {
-                console.log(`Deleting old file: ${pathname}, age: ${fileAge}ms`);
-                await del(pathname);
-                deletedFiles.push(pathname);
+            if (folderAge > maxAge) {
+                console.log(`Deleting old folder: ${folder}, age: ${folderAge}ms`);
+                await del(folder); // Delete the entire folder
+                deletedFolders.push(folder);
             }
         }
 
-        console.log("Cleanup complete. Deleted files:", deletedFiles);
+        console.log("Cleanup complete. Deleted folders:", deletedFolders);
     } catch (error) {
-        console.error("Error during cleanup of old files:", error);
+        console.error("Error during cleanup of old folders:", error);
     }
 }
 
 async function setCache(key: string, data: any) {
     const sanitizedKey = sanitizeKey(key);
     const timestamp = Date.now(); // Current timestamp
+    const folderName = `cache/${timestamp}`; // Folder named after timestamp
+
     const cacheEntry = {
         data,
         expiry: timestamp + CACHE_TTL,
     };
 
-    // Store the cache entry with a timestamp in the filename
-    await put(`cache/${timestamp}_${sanitizedKey}`, JSON.stringify(cacheEntry), {
+    // Store the cache entry inside the timestamped folder
+    await put(`${folderName}/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
     });
 
-    console.log(`Cache entry stored with key: cache/${timestamp}_${sanitizedKey}`);
+    console.log(`Cache entry stored in folder: ${folderName}`);
 
-    // Cleanup old files in the cache folder
+    // Cleanup old folders in the cache directory
     await deleteOldFiles("cache/", CACHE_TTL);
 }
+
 
 async function getCache(key: string): Promise<any | null> {
     const sanitizedKey = sanitizeKey(key);
