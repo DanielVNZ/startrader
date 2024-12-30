@@ -27,9 +27,9 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             console.log(`Checking file: ${pathname}`);
 
-            // Parse the timestamp from the file name if possible, or use the current time
+            // Extract timestamp from the filename (assumes format: "timestamp_key")
             const parts = pathname.split("_");
-            const lastModified = parts.length > 1 ? Number(parts[0]) : now;
+            const lastModified = parts.length > 1 ? Number(parts[0].replace("cache/", "")) : now;
 
             const fileAge = now - lastModified;
 
@@ -48,16 +48,19 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
 async function setCache(key: string, data: any) {
     const sanitizedKey = sanitizeKey(key);
+    const timestamp = Date.now(); // Current timestamp
     const cacheEntry = {
         data,
-        expiry: Date.now() + CACHE_TTL,
+        expiry: timestamp + CACHE_TTL,
     };
 
-    // Store the cache entry
-    await put(`cache/${sanitizedKey}`, JSON.stringify(cacheEntry), {
+    // Store the cache entry with a timestamp in the filename
+    await put(`cache/${timestamp}_${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
     });
+
+    console.log(`Cache entry stored with key: cache/${timestamp}_${sanitizedKey}`);
 
     // Cleanup old files in the cache folder
     await deleteOldFiles("cache/", CACHE_TTL);
