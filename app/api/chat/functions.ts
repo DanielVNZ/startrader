@@ -14,7 +14,7 @@ async function setCache(key: string, data: any) {
     };
 
     // Store in Vercel Blob Storage
-    await put(`cache/${sanitizedKey}.json`, JSON.stringify(cacheEntry), {
+    await put(`cache/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
         access: "public", // Specify access level
     });
@@ -24,10 +24,10 @@ async function getCache(key: string): Promise<any | null> {
     const sanitizedKey = sanitizeKey(key);
 
     // List blobs with the matching prefix
-    const blobs = await list({ prefix: `cache/${sanitizedKey}.json` });
+    const blobs = await list({ prefix: `cache/${sanitizedKey}` });
 
     // Use `pathname` to match the blob
-    const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}.json`);
+    const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}`);
 
     if (blob) {
         const response = await fetch(blob.url); // Fetch blob content using `url`
@@ -39,7 +39,7 @@ async function getCache(key: string): Promise<any | null> {
             return cacheEntry.data;
         } else {
             // Cache expired, delete it
-            await del(`cache/${sanitizedKey}.json`);
+            await del(`cache/${sanitizedKey}`);
         }
     }
     return null;
