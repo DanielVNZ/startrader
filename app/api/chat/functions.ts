@@ -27,7 +27,6 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             console.log(`Checking folder: ${folder}`);
 
-            // Extract numeric timestamp from the folder name
             const match = folder.match(/cache\/(\d+)/); // Matches "cache/<timestamp>"
             const folderTimestamp = match ? Number(match[1]) : NaN;
 
@@ -40,8 +39,7 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             if (folderAge > maxAge) {
                 console.log(`Deleting old folder: ${folder}, age: ${folderAge}ms`);
-                
-                // List all files under the folder prefix
+
                 const folderFiles = await list({ prefix: folder });
                 for (const file of folderFiles.blobs) {
                     console.log(`Deleting file: ${file.pathname}`);
@@ -80,7 +78,6 @@ async function setCache(key: string, data: any) {
     await deleteOldFiles("cache/", CACHE_TTL);
 }
 
-
 async function getCache(key: string): Promise<any | null> {
     const sanitizedKey = sanitizeKey(key);
 
@@ -99,7 +96,6 @@ async function getCache(key: string): Promise<any | null> {
         if (Date.now() < cacheEntry.expiry) {
             return cacheEntry.data;
         } else {
-            // Cache expired, delete it
             await del(`cache/${sanitizedKey}`);
         }
     }
@@ -130,7 +126,17 @@ async function fetchWithCache(endpoint: string, queryParams: Record<string, any>
 async function data_extract() {
     const url = "https://api.uexcorp.space/2.0/data_extract?data=commodities_routes";
     console.log(`Fetching URL: ${url}`);
-    return await fetchWithCache(url);
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+
+    // Fetch as plain text
+    const text = await response.text();
+    console.log("API Response (Raw Text):", text);
+
+    return text; // Return raw text or process it further if needed
 }
 
 async function get_commodities_prices_all() {
