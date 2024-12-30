@@ -70,22 +70,8 @@ async function get_commodities() {
     return await fetchWithCache("https://api.uexcorp.space/2.0/commodities");
 }
 
-async function getCommodityPrices(queryParams: Record<string, any>) {
-    // Ensure at least one parameter is provided
-    if (Object.keys(queryParams).length === 0) {
-        throw new Error("At least one query parameter is required.");
-    }
-
-    const queryString = new URLSearchParams(queryParams).toString();
-    const url = `https://api.uexcorp.space/2.0/commodities_prices?${queryString}`;
-
-    const response = await fetch(url);
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`API Error: ${error.message}`);
-    }
-
-    return await response.json();
+async function get_commodity_prices(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
 }
 
 
@@ -119,7 +105,7 @@ export async function runFunction(name: string, args: Record<string, any>) {
         case "get_commodities":
             return await get_commodities();
         case "get_commodity_prices":
-            return await getCommodityPrices(args);
+            return await get_commodity_prices(args);
         case "get_cities":
             return await get_cities(args);
         case "get_terminals":
@@ -165,17 +151,9 @@ export const functions = [
                     type: "string",
                     description: "The code of the terminal."
                 },
-                terminal_slug: {
-                    type: "string",
-                    description: "The slug of the terminal."
-                },
                 commodity_code: {
                     type: "string",
-                    description: "The code of the commodity."
-                },
-                commodity_slug: {
-                    type: "string",
-                    description: "The slug of the commodity."
+                    description: "The code of the commodity. PRIORTISE USING THIS. all Community codes are in your knowledgebase within the blob file."
                 },
             },
             required: [], // No specific parameter is required by itself
