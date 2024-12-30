@@ -68,14 +68,14 @@ export default function ChangelogAndIssues() {
             About
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Welcome to <strong>Star Trader</strong>, your companion for navigating the trading universe of Star Citizen. Explore features, contribute, and stay updated through our GitHub repository. Visit us at: 
+            Welcome to <strong>Star Trader</strong>, your companion for navigating the trading universe of Star Citizen. Explore features, contribute, and stay updated through our GitHub repository. Take a look  
             <a
               href="https://github.com/DanielVNZ/startrader"
               className="text-green-500 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Star Trader GitHub
+               Here
             </a>
           </p>
         </section>
