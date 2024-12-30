@@ -127,7 +127,7 @@ export async function runFunction(name: string, args: Record<string, any>) {
 export const functions = [
     {
         "name": "get_commodity_prices",
-        "description": "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one filter.",
+        "description": "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its community code.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -156,15 +156,7 @@ export const functions = [
                     "description": "The code of the commodity. PRIORITIZE USING THIS. All community codes are in your knowledge base within the blob file."
                 }
             },
-            "required": [], 
-            "anyOf": [
-                { "required": ["id_terminal"] },
-                { "required": ["id_commodity"] },
-                { "required": ["terminal_name"] },
-                { "required": ["commodity_name"] },
-                { "required": ["terminal_code"] },
-                { "required": ["commodity_code"] }
-            ]
+            "required": [] // No required properties in schema
         }
     },
     {
