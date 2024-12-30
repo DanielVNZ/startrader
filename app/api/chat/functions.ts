@@ -9,14 +9,25 @@ function sanitizeKey(key: string): string {
 async function deleteOldFiles(prefix: string, maxAge: number) {
     try {
         console.log(`Starting cleanup for files in prefix: ${prefix}`);
-        const blobs = await list({ prefix });
+        const blobs = await list({ prefix }); // Retrieves all files starting with the prefix
+
+        // Debug log: List all files found
+        if (blobs.blobs.length === 0) {
+            console.log("No files found within the prefix.");
+        } else {
+            console.log("Files found in cache:");
+            blobs.blobs.forEach((blob) => console.log(` - ${blob.pathname}`));
+        }
+
         const now = Date.now();
         const deletedFiles = [];
 
         for (const blob of blobs.blobs) {
             const { pathname } = blob;
 
-            // Extract timestamp from the filename or fallback to "now"
+            console.log(`Checking file: ${pathname}`);
+
+            // Parse the timestamp from the file name if possible, or use the current time
             const parts = pathname.split("_");
             const lastModified = parts.length > 1 ? Number(parts[0]) : now;
 
@@ -24,7 +35,7 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             if (fileAge > maxAge) {
                 console.log(`Deleting old file: ${pathname}, age: ${fileAge}ms`);
-                await del(pathname); // Delete the file using @vercel/blob's del function
+                await del(pathname);
                 deletedFiles.push(pathname);
             }
         }
