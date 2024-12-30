@@ -126,38 +126,46 @@ export async function runFunction(name: string, args: Record<string, any>) {
 // OpenAI Functions Array
 export const functions = [
     {
-        name: "get_commodity_prices",
-        description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one filter.",
-        parameters: {
-            type: "object",
-            properties: {
-                id_terminal: {
-                    type: "string",
-                    description: "Comma-separated terminal IDs (e.g., '1,2,3')."
+        "name": "get_commodity_prices",
+        "description": "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one filter.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_terminal": {
+                    "type": "string",
+                    "description": "Comma-separated terminal IDs (e.g., '1,2,3')."
                 },
-                id_commodity: {
-                    type: "integer",
-                    description: "The ID of the commodity."
+                "id_commodity": {
+                    "type": "integer",
+                    "description": "The ID of the commodity."
                 },
-                terminal_name: {
-                    type: "string",
-                    description: "The name of the terminal."
+                "terminal_name": {
+                    "type": "string",
+                    "description": "The name of the terminal."
                 },
-                commodity_name: {
-                    type: "string",
-                    description: "The name of the commodity."
+                "commodity_name": {
+                    "type": "string",
+                    "description": "The name of the commodity."
                 },
-                terminal_code: {
-                    type: "string",
-                    description: "The code of the terminal."
+                "terminal_code": {
+                    "type": "string",
+                    "description": "The code of the terminal."
                 },
-                commodity_code: {
-                    type: "string",
-                    description: "The code of the commodity. PRIORTISE USING THIS. all Community codes are in your knowledgebase within the blob file."
-                },
+                "commodity_code": {
+                    "type": "string",
+                    "description": "The code of the commodity. PRIORITIZE USING THIS. All community codes are in your knowledge base within the blob file."
+                }
             },
-            required: [], // No specific parameter is required by itself
-        },
+            "required": [], 
+            "anyOf": [
+                { "required": ["id_terminal"] },
+                { "required": ["id_commodity"] },
+                { "required": ["terminal_name"] },
+                { "required": ["commodity_name"] },
+                { "required": ["terminal_code"] },
+                { "required": ["commodity_code"] }
+            ]
+        }
     },
     {
         name: "get_cities",
