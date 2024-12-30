@@ -15,6 +15,8 @@ export default function ChangelogAndIssues() {
     return false;
   });
 
+  const [showDonateModal, setShowDonateModal] = useState(false);
+
   // Apply the Dark/Light mode to the html element
   useEffect(() => {
     const htmlElement = document.documentElement;
@@ -46,14 +48,12 @@ export default function ChangelogAndIssues() {
           </h1>
 
           {/* Donate Button */}
-          <a
-            href="https://ko-fi.com/danielvnz"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setShowDonateModal(true)}
             className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             💗
-          </a>
+          </button>
         </div>
       </div>
 
@@ -68,9 +68,9 @@ export default function ChangelogAndIssues() {
             Recent Changelog
           </h2>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
-            <li><strong>v1.0.2</strong> - Improved chat interface and added markdown support. (2024-12-28)</li>
-            <li><strong>v1.0.1</strong> - Fixed dark mode toggle bug. (2024-12-27)</li>
-            <li><strong>v1.0.0</strong> - Initial release of the chat application. (2024-12-25)</li>
+            <li><strong>v1.0.2</strong> - Added more UI buttons/Donation Information (30-12-2024)</li>
+            <li><strong>v1.0.1</strong> - Fixed dark mode toggle bug. (29-12-2024)</li>
+            <li><strong>v1.0.0</strong> - Initial release of the chat application. (29-12-2024)</li>
           </ul>
         </section>
 
@@ -80,12 +80,34 @@ export default function ChangelogAndIssues() {
             Known Issues
           </h2>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
-            <li>Rate limit error messages occasionally persist longer than expected.</li>
-            <li>Scroll to bottom feature sometimes fails on slow connections.</li>
+            <li>Users are unable to search for a list of commodities at a specific location.</li>
+            <li>Users are unable to ask for the most profitable commodity to trade.</li>
             <li>Dark mode toggle may reset on certain browsers after page refresh.</li>
+            <li>Dark mode may flicker white when reloading the page.</li>
           </ul>
         </section>
       </div>
+
+      {/* Donation Modal */}
+      {showDonateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <button
+              onClick={() => setShowDonateModal(false)}
+              className="absolute top-2 right-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              ✖
+            </button>
+            <iframe
+              id="kofiframe"
+              src="https://ko-fi.com/danielvnz/?hidefeed=true&widget=true&embed=true&preview=true"
+              style={{ border: "none", width: "100%", padding: "4px", background: "#f9f9f9" }}
+              height="712"
+              title="danielvnz"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
