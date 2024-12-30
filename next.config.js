@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const withSvgr = require('next-svgr');
+
+const nextConfig = withSvgr({
   experimental: {
     serverActions: true,
   },
@@ -17,6 +19,14 @@ const nextConfig = {
       },
     ];
   },
-};
+  webpack(config) {
+    // Add support for importing SVG files as React components
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+    return config;
+  },
+});
 
 module.exports = nextConfig;
