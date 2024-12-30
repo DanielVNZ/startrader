@@ -103,7 +103,7 @@ export default function Chat() {
     if (!vantaEffect) {
       setVantaEffect(
         WAVES({
-          el: vantaRef.current,
+          el: vantaRef.current as HTMLElement,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
