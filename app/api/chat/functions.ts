@@ -1,6 +1,6 @@
-import { CompletionCreateParams } from "openai/resources/chat/index";
+import { ChatCompletionCreateParams } from "openai/resources/chat/index";
 
-export const functions: CompletionCreateParams.Function[] = [
+export const functions: ChatCompletionCreateParams.Function[] = [
     {
         name: "get_commodity_prices",
         description: "Fetch prices for specific commodities based on various query parameters. ote that you MUST use atleast one filter",
