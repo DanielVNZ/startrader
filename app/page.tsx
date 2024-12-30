@@ -11,6 +11,9 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
+import LightModeBackground from "./LightModeBackground.svg";
+import DarkModeBackground from "./DarkModeBackground.svg";
+
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -60,7 +63,7 @@ export default function Chat() {
           `https://api.openai.com/v1/dashboard/billing/usage?start_date=${today}&end_date=${today}`,
           {
             headers: {
-              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your API key securely
             },
           }
         );
@@ -103,7 +106,14 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
+    <main
+      className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
+      style={{
+        backgroundImage: `url(${isDarkMode ? DarkModeBackground : LightModeBackground})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
@@ -140,14 +150,33 @@ export default function Chat() {
           </h1>
 
           {/* Usage Counter */}
-          <div className="absolute top-4 right-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-full px-3 py-1 shadow-md">
-            {usageCost !== null ? (
-              <span>
+          <div className="text-right">
+            {usageCost !== null && (
+              <div className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-full px-3 py-1 shadow-md">
                 Usage: <span className="font-bold">${usageCost.toFixed(2)}</span>
-              </span>
-            ) : (
-              <span>Loading Usage...</span>
+              </div>
             )}
+          </div>
+
+          {/* Buttons Container */}
+          <div className="flex items-center space-x-2">
+            {/* Change Log and Known Issues Button */}
+            <a
+              href="/changelogandissues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              ⚠️
+            </a>
+
+            {/* Donate Button */}
+            <button
+              onClick={() => setShowDonateModal(true)}
+              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              💗
+            </button>
           </div>
         </div>
       </div>
@@ -157,8 +186,147 @@ export default function Chat() {
         className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
         style={{ paddingTop: "96px", paddingBottom: "96px" }}
       >
-        {/* Messages rendering logic here */}
+        {messages.length > 0 ? (
+          messages.map((message, i) => (
+            <div
+              key={i}
+              className={clsx(
+                "flex w-full items-center justify-start border-b border-gray-200 dark:border-gray-700 py-4 pl-4 animate-fadeInSlideUp",
+                message.role === "user"
+                  ? "bg-gray-100 dark:bg-gray-800"
+                  : "bg-gray-100 dark:bg-gray-700"
+              )}
+            >
+              <div className="flex w-full items-start space-x-4">
+                <div
+                  className={clsx(
+                    "flex items-center justify-center w-10 h-10 rounded-full p-1.5 text-white",
+                    message.role === "assistant"
+                      ? "bg-green-500"
+                      : "bg-blue-500"
+                  )}
+                >
+                  {message.role === "user" ? (
+                    <Image
+                      src="https://www.svgrepo.com/show/186683/astronaut.svg"
+                      alt="User Icon"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                  ) : (
+                    <Image
+                      src="https://www.svgrepo.com/show/339963/chat-bot.svg"
+                      alt="Chat Bot Icon"
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                    />
+                  )}
+                </div>
+                <ReactMarkdown
+                  className="prose w-full break-words prose-p:leading-relaxed dark:prose-invert"
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: (props) => (
+                      <a {...props} target="_blank" rel="noopener noreferrer" />
+                    ),
+                  }}
+                >
+                  {message.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Welcome to <span className="text-green-500">Star Trader</span>
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Your go-to assistant for planning trade routes and accessing
+              accurate commodity prices for specific locations.
+            </p>
+            <div className="space-y-2">
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Help improve data:
+                </span>{" "}
+                <a
+                  href="https://uexcorp.space/data/signup"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  https://uexcorp.space/data/signup
+                </a>
+              </p>
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Donate to UEXCORP:
+                </span>{" "}
+                <a
+                  href="https://ko-fi.com/uexcorp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Ko-fi
+                </a>{" "}
+                |{" "}
+                <a
+                  href="https://www.patreon.com/uexcorp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Patreon
+                </a>
+              </p>
+              <p className="text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-gray-800 dark:text-gray-100">
+                  Donate to DanielVNZ (Bot Creator):
+                </span>{" "}
+                <a
+                  href="https://ko-fi.com/danielvnz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline hover:text-blue-700 dark:hover:text-blue-400"
+                >
+                  Ko-fi
+                </a>
+              </p>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
+
+      {/* Donation Modal */}
+      {showDonateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <button
+              onClick={() => setShowDonateModal(false)}
+              className="absolute top-2 right-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+            >
+              ✖
+            </button>
+            <iframe
+              id="kofiframe"
+              src="https://ko-fi.com/danielvnz/?hidefeed=true&widget=true&embed=true&preview=true"
+              style={{
+                border: "none",
+                width: "100%",
+                padding: "4px",
+                background: "#f9f9f9",
+              }}
+              height="712"
+              title="danielvnz"
+            ></iframe>
+          </div>
+        </div>
+      )}
 
       {/* Footer Section */}
       <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
