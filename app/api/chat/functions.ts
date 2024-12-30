@@ -1,9 +1,105 @@
-import { ChatCompletionCreateParams } from "openai/resources/chat/index";
+const cache = new Map<string, { data: any; expiry: number }>();
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
-export const functions: ChatCompletionCreateParams.Function[] = [
+function getCacheKey(endpoint: string, queryParams: Record<string, any>): string {
+    return `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
+}
+
+function setCache(key: string, data: any) {
+    cache.set(key, { data, expiry: Date.now() + CACHE_TTL });
+}
+
+function getCache(key: string): any | null {
+    const cached = cache.get(key);
+    if (cached && Date.now() < cached.expiry) {
+        return cached.data;
+    }
+    cache.delete(key); // Remove expired data
+    return null;
+}
+
+async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
+    const cacheKey = getCacheKey(endpoint, queryParams);
+
+    // Check cache first
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+        console.log(`Cache hit for ${cacheKey}`);
+        return cachedData;
+    }
+
+    // Fetch from API
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`${endpoint}?${queryString}`);
+    const data = await response.json();
+
+    // Store in cache
+    setCache(cacheKey, data);
+    return data;
+}
+
+// API Fetch Functions with Cache
+async function get_commodities() {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities");
+}
+
+async function get_commodity_prices(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
+}
+
+async function get_cities(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
+}
+
+async function get_terminals(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals", queryParams);
+}
+
+async function get_planets(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/planets", queryParams);
+}
+
+async function get_moons(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/moons", queryParams);
+}
+
+async function get_orbits(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/orbits", queryParams);
+}
+
+async function get_space_stations(queryParams: Record<string, any> = {}) {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
+}
+
+// Exported Function Runner
+export async function runFunction(name: string, args: Record<string, any>) {
+    switch (name) {
+        case "get_commodities":
+            return await get_commodities();
+        case "get_commodity_prices":
+            return await get_commodity_prices(args);
+        case "get_cities":
+            return await get_cities(args);
+        case "get_terminals":
+            return await get_terminals(args);
+        case "get_planets":
+            return await get_planets(args);
+        case "get_moons":
+            return await get_moons(args);
+        case "get_orbits":
+            return await get_orbits(args);
+        case "get_space_stations":
+            return await get_space_stations(args);
+        default:
+            throw new Error(`Function ${name} is not defined.`);
+    }
+}
+
+// OpenAI Functions Array
+export const functions = [
     {
         name: "get_commodity_prices",
-        description: "Fetch prices for specific commodities based on various query parameters. ote that you MUST use atleast one filter",
+        description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one filter.",
         parameters: {
             type: "object",
             properties: {
@@ -29,7 +125,7 @@ export const functions: ChatCompletionCreateParams.Function[] = [
     },
     {
         name: "get_cities",
-        description: "Fetch city data based on optional filters. Note that you MUST use atleast one filter",
+        description: "Fetch city data based on optional filters. Note that you MUST use at least one filter.",
         parameters: {
             type: "object",
             properties: {
@@ -55,7 +151,7 @@ export const functions: ChatCompletionCreateParams.Function[] = [
     },
     {
         name: "get_terminals",
-        description: "Fetch terminal data based on optional filters. ote that you MUST use atleast one filter",
+        description: "Fetch terminal data based on optional filters. Note that you MUST use at least one filter.",
         parameters: {
             type: "object",
             properties: {
@@ -192,73 +288,3 @@ export const functions: ChatCompletionCreateParams.Function[] = [
         },
     },
 ];
-
-async function get_commodities() {
-    const response = await fetch("https://api.uexcorp.space/2.0/commodities");
-    return await response.json();
-}
-
-async function get_commodity_prices(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/commodities_prices?${queryString}`);
-    return await response.json();
-}
-
-async function get_cities(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/cities?${queryString}`);
-    return await response.json();
-}
-
-async function get_terminals(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/terminals?${queryString}`);
-    return await response.json();
-}
-
-async function get_planets(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/planets?${queryString}`);
-    return await response.json();
-}
-
-async function get_moons(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/moons?${queryString}`);
-    return await response.json();
-}
-
-async function get_orbits(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/orbits?${queryString}`);
-    return await response.json();
-}
-
-async function get_space_stations(queryParams: Record<string, any> = {}) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`https://api.uexcorp.space/2.0/space_stations?${queryString}`);
-    return await response.json();
-}
-
-export async function runFunction(name: string, args: Record<string, any>) {
-    switch (name) {
-        case "get_commodities":
-            return await get_commodities();
-        case "get_commodity_prices":
-            return await get_commodity_prices(args);
-        case "get_cities":
-            return await get_cities(args);
-        case "get_terminals":
-            return await get_terminals(args);
-        case "get_planets":
-            return await get_planets(args);
-        case "get_moons":
-            return await get_moons(args);
-        case "get_orbits":
-            return await get_orbits(args);
-        case "get_space_stations":
-            return await get_space_stations(args);
-        default:
-            throw new Error(`Function ${name} is not defined.`);
-    }
-}
