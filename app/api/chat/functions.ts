@@ -24,8 +24,12 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
         for (const folder of folders) {
             if (!folder) continue; // Skip invalid entries
-            const parts = folder.split("/");
-            const folderTimestamp = Number(parts[1]); // Extract timestamp
+
+            console.log(`Checking folder: ${folder}`);
+
+            // Extract numeric timestamp from the folder name
+            const match = folder.match(/cache\/(\d+)/); // Matches "cache/<timestamp>"
+            const folderTimestamp = match ? Number(match[1]) : NaN;
 
             if (isNaN(folderTimestamp)) {
                 console.log(`Skipping non-timestamped folder: ${folder}`);
@@ -36,7 +40,14 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
             if (folderAge > maxAge) {
                 console.log(`Deleting old folder: ${folder}, age: ${folderAge}ms`);
-                await del(folder); // Delete the entire folder
+                
+                // List all files under the folder prefix
+                const folderFiles = await list({ prefix: folder });
+                for (const file of folderFiles.blobs) {
+                    console.log(`Deleting file: ${file.pathname}`);
+                    await del(file.pathname); // Delete each file individually
+                }
+
                 deletedFolders.push(folder);
             }
         }
