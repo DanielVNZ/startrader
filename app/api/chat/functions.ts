@@ -159,7 +159,7 @@ async function get_cities(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
 }
 
-async function get_all_terminals(queryParams: Record<string, any> = {}) {
+async function get_all_terminals() {
     return await fetchWithCache("https://api.uexcorp.space/2.0/terminals");
 }
 
