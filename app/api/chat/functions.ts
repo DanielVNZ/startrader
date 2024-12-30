@@ -70,9 +70,24 @@ async function get_commodities() {
     return await fetchWithCache("https://api.uexcorp.space/2.0/commodities");
 }
 
-async function get_commodity_prices(queryParams: Record<string, any> = {}) {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
+async function getCommodityPrices(queryParams: Record<string, any>) {
+    // Ensure at least one parameter is provided
+    if (Object.keys(queryParams).length === 0) {
+        throw new Error("At least one query parameter is required.");
+    }
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `https://api.uexcorp.space/2.0/commodities_prices?${queryString}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`API Error: ${error.message}`);
+    }
+
+    return await response.json();
 }
+
 
 async function get_cities(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
@@ -104,7 +119,7 @@ export async function runFunction(name: string, args: Record<string, any>) {
         case "get_commodities":
             return await get_commodities();
         case "get_commodity_prices":
-            return await get_commodity_prices(args);
+            return await getCommodityPrices(args);
         case "get_cities":
             return await get_cities(args);
         case "get_terminals":
@@ -132,22 +147,38 @@ export const functions = [
             properties: {
                 id_terminal: {
                     type: "string",
-                    description: "Comma-separated terminal IDs.",
+                    description: "Comma-separated terminal IDs (e.g., '1,2,3')."
                 },
                 id_commodity: {
                     type: "integer",
-                    description: "Commodity ID.",
+                    description: "The ID of the commodity."
                 },
                 terminal_name: {
                     type: "string",
-                    description: "Terminal name.",
+                    description: "The name of the terminal."
                 },
                 commodity_name: {
                     type: "string",
-                    description: "Commodity name.",
+                    description: "The name of the commodity."
+                },
+                terminal_code: {
+                    type: "string",
+                    description: "The code of the terminal."
+                },
+                terminal_slug: {
+                    type: "string",
+                    description: "The slug of the terminal."
+                },
+                commodity_code: {
+                    type: "string",
+                    description: "The code of the commodity."
+                },
+                commodity_slug: {
+                    type: "string",
+                    description: "The slug of the commodity."
                 },
             },
-            required: [],
+            required: [], // No specific parameter is required by itself
         },
     },
     {
