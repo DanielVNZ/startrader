@@ -1,28 +1,49 @@
-const cache = new Map<string, { data: any; expiry: number }>();
+import { put, del, list } from "@vercel/blob"; // Correct imports
+
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
-function getCacheKey(endpoint: string, queryParams: Record<string, any>): string {
-    return `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
+async function setCache(key: string, data: any) {
+    const cacheEntry = {
+        data,
+        expiry: Date.now() + CACHE_TTL,
+    };
+
+    // Store in Vercel Blob Storage
+    await put(`cache/${key}`, JSON.stringify(cacheEntry), {
+        contentType: "application/json",
+        access: "public", // Specify access level
+    });
 }
 
-function setCache(key: string, data: any) {
-    cache.set(key, { data, expiry: Date.now() + CACHE_TTL });
-}
+async function getCache(key: string): Promise<any | null> {
+    // List blobs with the matching prefix
+    const blobs = await list({ prefix: `cache/${key}` });
 
-function getCache(key: string): any | null {
-    const cached = cache.get(key);
-    if (cached && Date.now() < cached.expiry) {
-        return cached.data;
+    // Use `pathname` to match the blob
+    const blob = blobs.blobs.find((b) => b.pathname === `cache/${key}`);
+
+    if (blob) {
+        const response = await fetch(blob.url); // Fetch blob content using `url`
+        const content = await response.text();
+        const cacheEntry = JSON.parse(content);
+
+        // Check expiry
+        if (Date.now() < cacheEntry.expiry) {
+            return cacheEntry.data;
+        } else {
+            // Cache expired, delete it
+            await del(`cache/${key}`);
+        }
     }
-    cache.delete(key); // Remove expired data
     return null;
 }
 
+
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
-    const cacheKey = getCacheKey(endpoint, queryParams);
+    const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
 
     // Check cache first
-    const cachedData = getCache(cacheKey);
+    const cachedData = await getCache(cacheKey);
     if (cachedData) {
         console.log(`Cache hit for ${cacheKey}`);
         return cachedData;
@@ -34,7 +55,7 @@ async function fetchWithCache(endpoint: string, queryParams: Record<string, any>
     const data = await response.json();
 
     // Store in cache
-    setCache(cacheKey, data);
+    await setCache(cacheKey, data);
     return data;
 }
 
