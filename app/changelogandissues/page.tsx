@@ -62,6 +62,24 @@ export default function ChangelogAndIssues() {
         className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
         style={{ paddingTop: "96px", paddingBottom: "96px" }}
       >
+        {/* About Section */}
+        <section className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-4">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+            About
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            Welcome to <strong>Star Trader</strong>, your companion for navigating the trading universe of Star Citizen. Explore features, contribute, and stay updated through our GitHub repository. Visit us at: 
+            <a
+              href="https://github.com/DanielVNZ/startrader"
+              className="text-green-500 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Star Trader GitHub
+            </a>
+          </p>
+        </section>
+
         {/* Changelog Section */}
         <section className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-4">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
