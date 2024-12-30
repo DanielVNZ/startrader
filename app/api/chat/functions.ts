@@ -144,7 +144,7 @@ async function get_commodities_prices_all() {
 }
 
 async function get_commodities_raw_prices_all() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices_all");
+    return await fetchWithCache("	https://api.uexcorp.space/2.0/commodities_raw_prices_all");
 }
 
 async function get_commodities() {
@@ -197,7 +197,7 @@ export async function runFunction(name: string, args: Record<string, any>) {
         case "get_terminals":
             return await get_terminals(args);
         case "get_all_terminals":
-            return await get_all_terminals(args);
+            return await get_all_terminals();
         case "get_planets":
             return await get_planets(args);
         case "get_moons":
