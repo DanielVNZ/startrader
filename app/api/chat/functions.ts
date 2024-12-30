@@ -127,6 +127,17 @@ async function fetchWithCache(endpoint: string, queryParams: Record<string, any>
 }
 
 // API Fetch Functions with Cache
+async function data_extract() {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/data_extract?data=commodities_routes");
+}
+async function get_commodities_prices_all() {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices_all");
+}
+
+async function get_commodities_raw_prices_all() {
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices_all");
+}
+
 async function get_commodities() {
     return await fetchWithCache("https://api.uexcorp.space/2.0/commodities");
 }
@@ -162,6 +173,8 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
 // Exported Function Runner
 export async function runFunction(name: string, args: Record<string, any>) {
     switch (name) {
+        case "data_extract":
+            return await data_extract();
         case "get_commodities":
             return await get_commodities();
         case "get_commodity_prices":
@@ -178,6 +191,10 @@ export async function runFunction(name: string, args: Record<string, any>) {
             return await get_orbits(args);
         case "get_space_stations":
             return await get_space_stations(args);
+        case "get_commodities_prices_all":
+            return await get_commodities_prices_all();
+        case "get_commodities_raw_prices_all":
+            return await get_commodities_raw_prices_all();
         default:
             throw new Error(`Function ${name} is not defined.`);
     }
@@ -186,37 +203,53 @@ export async function runFunction(name: string, args: Record<string, any>) {
 // OpenAI Functions Array
 export const functions = [
     {
-        "name": "get_commodity_prices",
-        "description": "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its commodity code.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "id_terminal": {
-                    "type": "string",
-                    "description": "Comma-separated terminal IDs (e.g., '1,2,3')."
+         name: "data_extract",
+         description: "obtain the top 30 commodities routes according to UEX. make sure to add that all values are estimated when providing from this API",
+    },
+    {
+         name: "get_commodities",
+         description: "Fetch a list of all commodites include specifics about each commodity like if its buyable or sellable, if its illegal is it raw or refined and average market price.",
+    },
+    {
+         name: "get_commodities_prices_all",
+         description: "Fetch a list of all commodity prices, what terminal its att, buy sell prices",
+    },
+    {
+         name: "get_commodities_raw_prices_all",
+         description: "Fetch a list of all raw commodity prices, what terminal its att, buy sell prices",
+    },
+    {
+         name: "get_commodity_prices",
+         description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its commodity code.",
+         parameters: {
+            type: "object",
+             properties: {
+                 id_terminal: {
+                     type: "string",
+                     description: "Comma-separated terminal IDs (e.g., '1,2,3')."
                 },
-                "id_commodity": {
-                    "type": "integer",
-                    "description": "The ID of the commodity."
+                 id_commodity: {
+                     type: "integer",
+                     description: "The ID of the commodity."
                 },
-                "terminal_name": {
-                    "type": "string",
-                    "description": "The name of the terminal."
+                 terminal_name: {
+                     type: "string",
+                     description: "The name of the terminal."
                 },
-                "commodity_name": {
-                    "type": "string",
-                    "description": "The name of the commodity."
+                 commodity_name: {
+                     type: "string",
+                     description: "The name of the commodity."
                 },
-                "terminal_code": {
-                    "type": "string",
-                    "description": "The code of the terminal."
+                 terminal_code: {
+                     type: "string",
+                     description: "The code of the terminal."
                 },
-                "commodity_code": {
-                    "type": "string",
-                    "description": "The code of the commodity. PRIORITIZE USING THIS. All commodity codes are in your knowledge base."
+                 commodity_code: {
+                     type: "string",
+                     description: "The code of the commodity. PRIORITIZE USING THIS. All commodity codes are in your knowledge base."
                 }
             },
-            "required": [] // No required properties in schema
+             required: [] // No required properties in schema
         }
     },
     {
