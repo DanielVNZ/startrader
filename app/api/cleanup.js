@@ -4,9 +4,6 @@ const CACHE_FOLDER = "cache/"; // Replace with your folder prefix
 const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export default async function handler(req, res) {
-    // Log when the function starts
-    console.log("Cleanup function triggered");
-
     // Optional: Verify the CRON_SECRET
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
         console.log("Unauthorized request - missing or invalid CRON_SECRET");
@@ -14,9 +11,11 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log("Listing blobs in folder:", CACHE_FOLDER);
-        const blobs = await list({ prefix: CACHE_FOLDER });
-        console.log(`Found ${blobs.blobs.length} blobs in the folder.`);
+        console.log("Starting cleanup process for folder:", CACHE_FOLDER);
+
+        // Recursively list all blobs in the folder
+        const blobs = await list({ prefix: CACHE_FOLDER, recursive: true });
+        console.log(`Found ${blobs.blobs.length} files in all subfolders.`);
 
         const now = Date.now();
         const deletedFiles = [];
