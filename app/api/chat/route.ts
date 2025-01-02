@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { functions } from "./functions";
+import { tools } from "./functions";
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
@@ -305,7 +305,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                 model: "gpt-4",
                 messages: extendedMessages,
                 stream: true,
-                tools: functions,
+                tools: tools,
                 tool_choice: "auto",
                 max_tokens: MAX_OUTPUT_TOKENS,
             });
