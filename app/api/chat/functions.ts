@@ -209,31 +209,31 @@ export const functions: Array<any> = [
         name: "data_extract",
         description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
         type: "function",
-        function: async () => await data_extract
+        function: data_extract
     },
     {
         name: "get_commodities",
         description: "Fetch a list of all commodities including specifics like legality and market price.",
         type: "function",
-        function: async () => await get_commodities(),
+        function: get_commodities
     },
     {
         name: "get_commodities_prices_all",
         description: "Fetch a list of all commodity prices and their terminal availability.",
         type: "function",
-        function: async () => await get_commodities_prices_all
+        function: get_commodities_prices_all
     },
     {
         name: "get_commodities_raw_prices_all",
         description: "Fetch a list of all raw commodity prices and their terminal availability.",
         type: "function",
-        function: async () => await get_commodities_raw_prices_all
+        function: get_commodities_raw_prices_all
     },
     {
         name: "get_all_terminals",
         description: "Fetch a list of all terminal information.",
         type: "function",
-        function: async () => await get_all_terminals
+        function: get_all_terminals
     },
     {
         name: "get_commodity_prices",
@@ -251,7 +251,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_commodity_prices(args)
+        function: get_commodity_prices
     },
     {
         name: "get_cities",
@@ -267,7 +267,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_cities(args)
+        function: get_cities
     },
     {
         name: "get_terminals",
@@ -282,7 +282,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_terminals(args)
+        function: get_terminals
     },
     {
         name: "get_planets",
@@ -298,7 +298,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_planets(args)
+        function: get_planets
     },
     {
         name: "get_moons",
@@ -314,7 +314,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_moons(args)
+        function: get_moons
     },
     {
         name: "get_orbits",
@@ -330,7 +330,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_orbits(args)
+        function: get_orbits
     },
     {
         name: "get_space_stations",
@@ -349,6 +349,6 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async (args: Record<string, any>) => await get_space_stations(args)
+        function: get_space_stations
     }
 ];
