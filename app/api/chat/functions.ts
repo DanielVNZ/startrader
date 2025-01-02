@@ -168,7 +168,7 @@ async function get_cities(queryParams: Record<string, any> = {}) {
 }
 
 async function get_all_terminals() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals");
+    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals?type=commodity");
 }
 
 async function get_terminals(queryParams: Record<string, any> = {}) {
@@ -236,19 +236,19 @@ export const functions = [
     },
     {
          name: "get_commodities",
-         description: "Fetch a list of all commodites include specifics about each commodity like if its buyable or sellable, if its illegal is it raw or refined and average market price.",
+         description: "Fetch a list of all commodites. This api includes specifics about each commodity like if its buyable or sellable, if its illegal is it raw or refined and average market price.",
     },
     {
          name: "get_commodities_prices_all",
-         description: "Fetch a list of all commodity prices, what terminal its att, buy sell prices",
+         description: "Fetch a list of all commodity prices, what terminal the commodity is avaliable at, commoditiy prices etc",
     },
     {
          name: "get_commodities_raw_prices_all",
-         description: "Fetch a list of all raw commodity prices, what terminal its att, buy sell prices",
+         description: "Fetch a list of all raw commodity prices, what terminal the commodity is avaliable at, commoditiy prices etc",
     },
     {
         name: "get_all_terminals",
-        description: "Fetch a list of all terminal information",
+        description: "Fetch a list of all terminal information. It will show you information about each terminal in the game.",
    },
     {
          name: "get_commodity_prices",
@@ -286,7 +286,7 @@ export const functions = [
     },
     {
         name: "get_cities",
-        description: "This API requires ONE query parameter, you must provide atleast one of these.",
+        description: "This API can be run with no paramaters or with ONE parameter. provides a list of cities.",
         parameters: {
             type: "object",
             properties: {
@@ -334,7 +334,7 @@ export const functions = [
     },
     {
         name: "get_planets",
-        description: "This API requires ONE query parameter, you must provide atleast one of these.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these. can search specific information about a planet.",
         parameters: {
             type: "object",
             properties: {
