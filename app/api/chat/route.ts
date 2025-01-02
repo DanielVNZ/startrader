@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { tools } from "./functions";
+import { tools, runFunction } from "./functions";
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
@@ -293,12 +293,24 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
             // Process the streamed response chunks
             for await (const chunk of response) {
-                const text = chunk.choices[0]?.delta?.content || ""; // Extract content
-                if (text) {
-                    controller.enqueue(new TextEncoder().encode(text)); // Encode text and enqueue
-                }
-            }
-
+               const functionCall = chunk.choices[0]?.delta?.function_call;
+               if (functionCall) {
+                   const name = functionCall.name;
+                   const args = functionCall.arguments ? JSON.parse(functionCall.arguments) : {};
+           
+                   if (name) {
+                       try {
+                           const result = await runFunction(name, args);
+                           console.log(`[LOG] Function ${name} executed. Result:`, result);
+                       } catch (error) {
+                           console.error(`[ERROR] Function ${name} execution failed.`, error);
+                       }
+                   } else {
+                       console.error("[ERROR] Function name is undefined.");
+                   }
+               }
+           }
+           
             controller.close();
         },
     });

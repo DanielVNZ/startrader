@@ -98,37 +98,73 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
 }
 
 export async function runFunction(name: string, args: Record<string, any>) {
-    log("Running function:", name);
-    switch (name) {
-        case "data_extract":
-            return await data_extract();
-        case "get_commodities":
-            return await get_commodities();
-        case "get_commodity_prices":
-            return await get_commodity_prices(args);
-        case "get_cities":
-            return await get_cities(args);
-        case "get_terminals":
-            return await get_terminals(args);
-        case "get_all_terminals":
-            return await get_all_terminals();
-        case "get_planets":
-            return await get_planets(args);
-        case "get_moons":
-            return await get_moons(args);
-        case "get_orbits":
-            return await get_orbits(args);
-        case "get_space_stations":
-            return await get_space_stations(args);
-        case "get_commodities_prices_all":
-            return await get_commodities_prices_all();
-        case "get_commodities_raw_prices_all":
-            return await get_commodities_raw_prices_all();
-        default:
-            log("Error: Function not defined.", name);
-            throw new Error(`Function ${name} is not defined.`);
+    console.log(`[LOG] Function called: ${name}`);
+    console.log(`[LOG] Arguments:`, JSON.stringify(args, null, 2));
+
+    try {
+        let result;
+        switch (name) {
+            case "data_extract":
+                console.log(`[LOG] Running data_extract`);
+                result = await data_extract();
+                break;
+            case "get_commodities":
+                console.log(`[LOG] Running get_commodities`);
+                result = await get_commodities();
+                break;
+            case "get_commodity_prices":
+                console.log(`[LOG] Running get_commodity_prices with args`);
+                result = await get_commodity_prices(args);
+                break;
+            case "get_cities":
+                console.log(`[LOG] Running get_cities with args`);
+                result = await get_cities(args);
+                break;
+            case "get_terminals":
+                console.log(`[LOG] Running get_terminals with args`);
+                result = await get_terminals(args);
+                break;
+            case "get_all_terminals":
+                console.log(`[LOG] Running get_all_terminals`);
+                result = await get_all_terminals();
+                break;
+            case "get_planets":
+                console.log(`[LOG] Running get_planets with args`);
+                result = await get_planets(args);
+                break;
+            case "get_moons":
+                console.log(`[LOG] Running get_moons with args`);
+                result = await get_moons(args);
+                break;
+            case "get_orbits":
+                console.log(`[LOG] Running get_orbits with args`);
+                result = await get_orbits(args);
+                break;
+            case "get_space_stations":
+                console.log(`[LOG] Running get_space_stations with args`);
+                result = await get_space_stations(args);
+                break;
+            case "get_commodities_prices_all":
+                console.log(`[LOG] Running get_commodities_prices_all`);
+                result = await get_commodities_prices_all();
+                break;
+            case "get_commodities_raw_prices_all":
+                console.log(`[LOG] Running get_commodities_raw_prices_all`);
+                result = await get_commodities_raw_prices_all();
+                break;
+            default:
+                console.error(`[ERROR] Function not defined: ${name}`);
+                throw new Error(`Function ${name} is not defined.`);
+        }
+
+        console.log(`[LOG] Function ${name} executed successfully. Result:`, JSON.stringify(result, null, 2));
+        return result;
+    } catch (error) {
+        console.error(`[ERROR] Error while executing function ${name}:`, error);
+        throw error;
     }
 }
+
 
 
 export const tools: Array<any> = [
