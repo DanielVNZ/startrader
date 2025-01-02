@@ -1,108 +1,4 @@
-import { put, del, list } from "@vercel/blob";
-
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
-
-function sanitizeKey(key: string): string {
-    return encodeURIComponent(key); // Encode the key to make it URL-safe
-}
-
-async function deleteOldFiles(prefix: string, maxAge: number) {
-    try {
-        const blobs = await list({ prefix });
-        const folders = new Set(
-            blobs.blobs.map((blob) => {
-                const parts = blob.pathname.split("/");
-                return parts.length > 1 ? `${parts[0]}/${parts[1]}` : null;
-            })
-        );
-
-        const now = Date.now();
-        const deletedFolders = [];
-
-        for (const folder of folders) {
-            if (!folder) continue;
-
-            const match = folder.match(/cache\/(\d+)/);
-            const folderTimestamp = match ? Number(match[1]) : NaN;
-
-            if (isNaN(folderTimestamp)) continue;
-
-            const folderAge = now - folderTimestamp;
-
-            if (folderAge > maxAge) {
-                const folderFiles = await list({ prefix: folder });
-                for (const file of folderFiles.blobs) {
-                    await del(file.pathname);
-                }
-
-                deletedFolders.push(folder);
-            }
-        }
-
-        console.log("Cleanup complete. Deleted folders:", deletedFolders);
-    } catch (error) {
-        console.error("Error during cleanup of old folders:", error);
-    }
-}
-
-async function setCache(key: string, data: any) {
-    const sanitizedKey = sanitizeKey(key);
-    const timestamp = Date.now();
-    const folderName = `cache/${timestamp}`;
-
-    const cacheEntry = {
-        data,
-        expiry: timestamp + CACHE_TTL,
-    };
-
-    await put(`${folderName}/${sanitizedKey}`, JSON.stringify(cacheEntry), {
-        contentType: "application/json",
-        access: "public",
-    });
-
-    await deleteOldFiles("cache/", CACHE_TTL);
-}
-
-async function getCache(key: string): Promise<any | null> {
-    const sanitizedKey = sanitizeKey(key);
-
-    const blobs = await list({ prefix: `cache/${sanitizedKey}` });
-    const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}`);
-
-    if (blob) {
-        const response = await fetch(blob.url);
-        const content = await response.text();
-        const cacheEntry = JSON.parse(content);
-
-        if (Date.now() < cacheEntry.expiry) {
-            return cacheEntry.data;
-        } else {
-            await del(`cache/${sanitizedKey}`);
-        }
-    }
-    return null;
-}
-
-async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
-    const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
-
-    const cachedData = await getCache(cacheKey);
-    if (cachedData) {
-        return cachedData;
-    }
-
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`${endpoint}?${queryString}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch data from ${endpoint}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    await setCache(cacheKey, data);
-    return data;
-}
+import fetch from "node-fetch";
 
 function validateQueryParams(queryParams: Record<string, any>): void {
     if (!queryParams || Object.keys(queryParams).length === 0) {
@@ -110,7 +6,7 @@ function validateQueryParams(queryParams: Record<string, any>): void {
     }
 }
 
-// API Fetch Functions with Cache
+// API Fetch Functions
 async function data_extract() {
     const url = "https://api.uexcorp.space/2.0/data_extract?data=commodities_routes";
     const response = await fetch(url);
@@ -123,54 +19,105 @@ async function data_extract() {
 }
 
 async function get_commodities_prices_all() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices_all");
+    const response = await fetch("https://api.uexcorp.space/2.0/commodities_prices_all");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_commodities_raw_prices_all() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_raw_prices_all");
+    const response = await fetch("https://api.uexcorp.space/2.0/commodities_raw_prices_all");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_commodities() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities");
+    const response = await fetch("https://api.uexcorp.space/2.0/commodities");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_commodity_prices(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/commodities_prices?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_cities(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/cities?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_all_terminals() {
-    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals?type=commodity");
+    const response = await fetch("https://api.uexcorp.space/2.0/terminals?type=commodity");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_terminals(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/terminals", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/terminals?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_planets(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/planets", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/planets?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_moons(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/moons", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/moons?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_orbits(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/orbits", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/orbits?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 async function get_space_stations(queryParams: Record<string, any> = {}) {
     validateQueryParams(queryParams);
-    return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`https://api.uexcorp.space/2.0/space_stations?${queryString}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from API: ${response.statusText}`);
+    }
+    return await response.json();
 }
 
 export async function runFunction(name: string, args: Record<string, any>) {
