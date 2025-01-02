@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useRef, useEffect, useState } from "react";
 import { useChat } from "ai/react";
 import va from "@vercel/analytics";
