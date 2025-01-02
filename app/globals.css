@@ -13,3 +13,14 @@ main {
     display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
   }
   
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent extra scrollbars from the root */
+  }
+  
+  body {
+    overflow: auto; /* Restore scrolling on the body if needed */
+  }
+  
+  
