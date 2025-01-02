@@ -282,43 +282,66 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
     // Create the initial OpenAI API request
     const stream = new ReadableStream({
-        async start(controller) {
-            const response = await openai.chat.completions.create({
-                model: "gpt-4-turbo",
-                messages: extendedMessages,
-                stream: true,
-                tools: tools,
-                tool_choice: "auto",
-            });
-
-            // Process the streamed response chunks
-            for await (const chunk of response) {
-               const functionCall = chunk.choices[0]?.delta?.function_call;
-               if (functionCall) {
-                   const name = functionCall.name;
-                   const args = functionCall.arguments ? JSON.parse(functionCall.arguments) : {};
-           
-                   if (name) {
-                       try {
-                           const result = await runFunction(name, args);
-                           console.log(`[LOG] Function ${name} executed. Result:`, result);
-                       } catch (error) {
-                           console.error(`[ERROR] Function ${name} execution failed.`, error);
-                       }
-                   } else {
-                       console.error("[ERROR] Function name is undefined.");
-                   }
-               }
-           }
-           
-            controller.close();
-        },
-    });
-
-    return new Response(stream, {
-        status: 200,
-        headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-        },
-    });
+      async start(controller) {
+          try {
+              const response = await openai.chat.completions.create({
+                  model: "gpt-4-turbo",
+                  messages: extendedMessages,
+                  stream: true,
+                  tools, // Use tools array instead of functions
+                  tool_choice: "auto", // Enable automatic tool selection
+              });
+  
+              for await (const chunk of response) {
+                  const toolCalls = chunk.choices[0]?.delta?.tool_calls;
+  
+                  if (Array.isArray(toolCalls)) {
+                      for (const toolCall of toolCalls) {
+                          const name = toolCall.function?.name;
+                          const args = toolCall.function?.arguments ? JSON.parse(toolCall.function.arguments) : {};
+  
+                          if (name) {
+                              try {
+                                  const result = await runFunction(name, args);
+                                  console.log(`[LOG] Tool ${name} executed. Result:`, result);
+  
+                                  controller.enqueue(new TextEncoder().encode(JSON.stringify(result)));
+                              } catch (innerError) {
+                                  const errorMessage =
+                                      innerError instanceof Error
+                                          ? innerError.message
+                                          : "An unknown error occurred.";
+                                  console.error(`[ERROR] Tool ${name} execution failed.`, errorMessage);
+                                  controller.enqueue(new TextEncoder().encode(`[ERROR] ${errorMessage}`));
+                              }
+                          } else {
+                              console.error("[ERROR] Tool name is undefined.");
+                              controller.enqueue(new TextEncoder().encode("[ERROR] Tool name is undefined."));
+                          }
+                      }
+                  } else {
+                      const text = chunk.choices[0]?.delta?.content || "";
+                      if (text) {
+                          controller.enqueue(new TextEncoder().encode(text));
+                      }
+                  }
+              }
+  
+              controller.close();
+          } catch (outerError) {
+              const errorMessage =
+                  outerError instanceof Error
+                      ? outerError.message
+                      : "An unknown error occurred during streaming.";
+              console.error("[ERROR] Failed to stream response:", errorMessage);
+              controller.error(new Error(errorMessage));
+          }
+      },
+  });
+  
+  
+  
+  
+  
+  
 }
