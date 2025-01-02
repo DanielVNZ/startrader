@@ -10,6 +10,7 @@ import remarkGfm from "remark-gfm";
 import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
+import debounce from "lodash/debounce";
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -67,9 +68,17 @@ export default function Chat() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+  
 
   useEffect(() => {
-    scrollToBottom();
+    // Create a debounced function to smooth scrolling
+    const debounceScroll = debounce(scrollToBottom, 100);
+  
+    // Call the debounced scroll on message updates
+    debounceScroll();
+  
+    // Clean up the debounce function
+    return () => debounceScroll.cancel();
   }, [messages]);
 
   return (
