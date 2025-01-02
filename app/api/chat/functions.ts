@@ -183,28 +183,28 @@ export const tools: Array<any> = [
         type: "function",
         function: {
             name: "get_commodities_prices_all",
-            description: "Fetch a list of all commodity prices and their terminal availability.",
+            description: "Fetch a list of all commodity prices and their terminal availability. USE AS A LAST RESPORT. Try get_",
         },
     },
     {
         type: "function",
         function: {
             name: "get_commodities_raw_prices_all",
-            description: "Fetch a list of all raw commodity prices and their terminal availability.",
+            description: "Fetch a list of all raw commodity prices and their terminal availability. provide the user with the requested proice of their commodity based on their query. ",
         },
     },
     {
         type: "function",
         function: {
             name: "get_all_terminals",
-            description: "Fetch a list of all terminal information.",
+            description: "Fetch a list of all terminal information. this can help plan trade routes or find locations to sell ",
         },
     },
     {
         type: "function",
         function: {
             name: "get_commodity_prices",
-            description: "Fetch specific commodity prices using query parameters.",
+            description: "Fetch specific commodity prices using query parameters. this will help you find locations to sell commodity, for example searching a commdoity name GOLD will tell you the locations of where to sell GOLD that can be passed on to the user. ",
             parameters: {
                 type: "object",
                 properties: {
@@ -240,7 +240,7 @@ export const tools: Array<any> = [
         type: "function",
         function: {
             name: "get_terminals",
-            description: "Fetch terminals using query parameters.",
+            description: "Fetch terminals using query parameters. to search a specific terminal ",
             parameters: {
                 type: "object",
                 properties: {
