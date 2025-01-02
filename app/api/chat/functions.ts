@@ -300,7 +300,6 @@ export const tools: Array<any> = [
             name: "data_extract",
             description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
         },
-        handler: data_extract
     },
     {
         type: "function",
@@ -308,7 +307,6 @@ export const tools: Array<any> = [
             name: "get_commodities",
             description: "Fetch a list of all commodities including specifics like legality and market price.",
         },
-        handler: get_commodities
     },
     {
         type: "function",
@@ -316,7 +314,6 @@ export const tools: Array<any> = [
             name: "get_commodities_prices_all",
             description: "Fetch a list of all commodity prices and their terminal availability.",
         },
-        handler: get_commodities_prices_all
     },
     {
         type: "function",
@@ -324,7 +321,6 @@ export const tools: Array<any> = [
             name: "get_commodities_raw_prices_all",
             description: "Fetch a list of all raw commodity prices and their terminal availability.",
         },
-        handler: get_commodities_raw_prices_all
     },
     {
         type: "function",
@@ -332,7 +328,6 @@ export const tools: Array<any> = [
             name: "get_all_terminals",
             description: "Fetch a list of all terminal information.",
         },
-        handler: get_all_terminals
     },
     {
         type: "function",
@@ -352,7 +347,6 @@ export const tools: Array<any> = [
                 required: ["id_terminal"],
             },
         },
-        handler: get_commodity_prices
     },
     {
         type: "function",
@@ -370,7 +364,6 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_cities
     },
     {
         type: "function",
@@ -387,7 +380,6 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_terminals
     },
     {
         type: "function",
@@ -405,7 +397,6 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_planets
     },
     {
         type: "function",
@@ -423,7 +414,6 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_moons
     },
     {
         type: "function",
@@ -441,7 +431,6 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_orbits
     },
     {
         type: "function",
@@ -462,6 +451,5 @@ export const tools: Array<any> = [
                 required: [],
             },
         },
-        handler: get_space_stations
     }
 ];
