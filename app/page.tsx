@@ -164,7 +164,7 @@ export default function Chat() {
             <div
               key={i}
               className={clsx(
-                "flex w-full items-center justify-start py-4 pl-4 animate-fadeInSlideUp rounded-md",
+                "flex w-full items-center justify-start py-3 pl-4 animate-fadeInSlideUp rounded-md",
                 message.role === "user"
                   ? "bg-gray-100 dark:bg-gray-800"
                   : "bg-gray-100 dark:bg-gray-700"
