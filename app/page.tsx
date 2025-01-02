@@ -68,16 +68,10 @@ export default function Chat() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
-  
 
   useEffect(() => {
-    // Create a debounced function to smooth scrolling
     const debounceScroll = debounce(scrollToBottom, 100);
-  
-    // Call the debounced scroll on message updates
     debounceScroll();
-  
-    // Clean up the debounce function
     return () => debounceScroll.cancel();
   }, [messages]);
 
@@ -90,13 +84,11 @@ export default function Chat() {
         backgroundPosition: 'center',
       }}
     >
-    
+
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full bg-opacity-50 shadow-md z-50">
+      <div className="fixed top-0 left-0 w-full bg-opacity-50 shadow-md z-50 top-bar">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
-          {/* Buttons Container */}
           <div className="flex items-center space-x-2">
-            {/* Dark Mode Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -104,7 +96,6 @@ export default function Chat() {
               {isDarkMode ? "☀️" : "🌙"}
             </button>
 
-            {/* Refresh Button */}
             <button
               onClick={() => window.location.reload()}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -113,7 +104,6 @@ export default function Chat() {
             </button>
           </div>
 
-          {/* Page Title */}
           <h1 className="text-black-500 dark:text-white-500 text-lg font-bold">
             Star Trader - Powered By{" "}
             <a
@@ -126,9 +116,7 @@ export default function Chat() {
             </a>
           </h1>
 
-          {/* Buttons Container */}
           <div className="flex items-center space-x-2">
-            {/* Change Log and Known Issues Button */}
             <a
               href="/changelogandissues"
               target="_blank"
@@ -138,7 +126,6 @@ export default function Chat() {
               ⚠️
             </a>
 
-            {/* Donate Button */}
             <button
               onClick={() => setShowDonateModal(true)}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -151,8 +138,11 @@ export default function Chat() {
 
       {/* Messages Container */}
       <div
-        className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
-        style={{ paddingTop: "96px", paddingBottom: "96px" }}
+        className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 space-y-4 chat-container"
+        style={{
+          paddingTop: "120px", // Adjust for top bar
+          paddingBottom: "120px", // Adjust for bottom bar
+        }}
       >
         {messages.length > 0 ? (
           messages.map((message, i) => (
@@ -263,7 +253,7 @@ export default function Chat() {
                   Ko-fi
                 </a>
                 <p>
-                  This service is not cheap to run. Please consider donating if you use this tool oftern. 
+                  This service is not cheap to run. Please consider donating if you use this tool often.
                   <p>
                   Thank you!
                   </p>
@@ -275,7 +265,6 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Donation Modal */}
       {showDonateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
@@ -296,9 +285,7 @@ export default function Chat() {
         </div>
       )}
 
-      {/* Footer Section */}
-      <div className="fixed bottom-0 w-full px-4 py-5 sm:px-6">
-        {/* Input Form */}
+      <div className="fixed bottom-0 w-full px-4 py-5 sm:px-6 bottom-bar">
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
             ref={formRef}
