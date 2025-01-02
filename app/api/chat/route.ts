@@ -8,15 +8,13 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
-// const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function POST(req: Request) {
-   const { messages } = await req.json();
+    const { messages } = await req.json();
 
-   // Custom GPT instructions as a system message
-   const systemMessage = {
-       role: "system",
-       content: `
+    // Custom GPT instructions as a system message
+    const systemMessage = {
+        role: "system",
+        content: `
 #### **Mandatory Pre-Check Questions**
 If the user requests the **most profitable location**, skip the location pre-check and directly query the API for profitability data. If the user asks for the **nearest location** or a combination of both, confirm the following:
 1. What commodity are you selling?
@@ -277,39 +275,21 @@ ID: 159, Name: Thrust, Commodity Code: THRU
 ID: 160, Name: Zip, Commodity Code: ZIP
 
 
- `,
+ ` // Add your content here
     };
 
-    const MAX_TPM = 30000; // Tokens per minute limit
-    const MAX_OUTPUT_TOKENS = 2500; // Max tokens for the model's output
-    const MAX_INPUT_TOKENS = MAX_TPM - MAX_OUTPUT_TOKENS; // Remaining tokens available for input
-
-    // Limit message tokens
-    const calculateTokens = (message: any) => message.content.length / 4; // Rough estimate (1 token = ~4 characters)
-    let totalTokens = calculateTokens(systemMessage); // Start with systemMessage tokens
-    const limitedMessages = [];
-
-    for (const message of messages.slice(-10).reverse()) {
-        const messageTokens = calculateTokens(message);
-        if (totalTokens + messageTokens > MAX_INPUT_TOKENS) break;
-        limitedMessages.unshift(message);
-        totalTokens += messageTokens;
-    }
-
-    const extendedMessages = [systemMessage, ...limitedMessages];
+    const extendedMessages = [systemMessage, ...messages];
 
     // Create the initial OpenAI API request
     const stream = new ReadableStream({
         async start(controller) {
             const response = await openai.chat.completions.create({
-                model: "gpt-4",
+                model: "gpt-4-turbo",
                 messages: extendedMessages,
                 stream: true,
                 tools: tools,
                 tool_choice: "auto",
-                max_tokens: MAX_OUTPUT_TOKENS,
             });
-
 
             // Process the streamed response chunks
             for await (const chunk of response) {
@@ -320,7 +300,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
             }
 
             controller.close();
-        }
+        },
     });
 
     return new Response(stream, {
@@ -329,5 +309,4 @@ ID: 160, Name: Zip, Commodity Code: ZIP
             "Content-Type": "text/plain; charset=utf-8",
         },
     });
-    
 }
