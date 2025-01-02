@@ -287,7 +287,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                 model: "gpt-4-turbo",
                 messages: extendedMessages,
                 stream: true,
-                tools: tools,
+                functions: tools.map(tool => tool.function),
                 tool_choice: "auto",
             });
 
