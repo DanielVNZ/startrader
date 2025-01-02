@@ -304,7 +304,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
     const extendedMessages = [systemMessage, ...limitedMessages];
 
     const initialResponse = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: extendedMessages,
         stream: true,
         functions,
@@ -336,7 +336,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
             await delay(2000); // Throttle subsequent requests
             
             return openai.chat.completions.create({
-                model: "gpt-4o",
+                model: "gpt-4o-mini",
                 stream: true,
                 messages: adjustedMessages,
                 max_tokens: MAX_OUTPUT_TOKENS,
