@@ -86,7 +86,7 @@ export default function Chat() {
     >
 
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full bg-opacity-50 shadow-md z-50 top-bar">
+      <div className="fixed top-0 left-0 w-full bg-opacity-50 shadow-md z-50 top-bar" style={{ height: "96px" }}>
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           <div className="flex items-center space-x-2">
             <button
@@ -140,8 +140,8 @@ export default function Chat() {
       <div
         className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 space-y-4 chat-container"
         style={{
-          paddingTop: "120px", // Adjust for top bar
-          paddingBottom: "120px", // Adjust for bottom bar
+          paddingTop: "96px", // Match top bar height
+          paddingBottom: "96px", // Match bottom bar height
         }}
       >
         {messages.length > 0 ? (
@@ -285,7 +285,7 @@ export default function Chat() {
         </div>
       )}
 
-      <div className="fixed bottom-0 w-full px-4 py-5 sm:px-6 bottom-bar">
+      <div className="fixed bottom-0 w-full px-4 py-5 sm:px-6 bottom-bar" style={{ height: "96px" }}>
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
             ref={formRef}
