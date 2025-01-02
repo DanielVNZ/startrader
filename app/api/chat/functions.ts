@@ -173,7 +173,7 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
 }
 
-export async function runFunction(name: string, args: Record<string, any>) {
+export async function runFunction(name: string, args: Record<string, any>, toolChoice?: string) {
     switch (name) {
         case "data_extract":
             return await data_extract();
@@ -204,26 +204,36 @@ export async function runFunction(name: string, args: Record<string, any>) {
     }
 }
 
-export const functions = [
+export const functions: Array<any> = [
     {
         name: "data_extract",
         description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
+        type: "function",
+        function: async () => await data_extract
     },
     {
         name: "get_commodities",
         description: "Fetch a list of all commodities including specifics like legality and market price.",
+        type: "function",
+        function: async () => await get_commodities(),
     },
     {
         name: "get_commodities_prices_all",
         description: "Fetch a list of all commodity prices and their terminal availability.",
+        type: "function",
+        function: async () => await get_commodities_prices_all
     },
     {
         name: "get_commodities_raw_prices_all",
         description: "Fetch a list of all raw commodity prices and their terminal availability.",
+        type: "function",
+        function: async () => await get_commodities_raw_prices_all
     },
     {
         name: "get_all_terminals",
         description: "Fetch a list of all terminal information.",
+        type: "function",
+        function: async () => await get_all_terminals
     },
     {
         name: "get_commodity_prices",
@@ -240,6 +250,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_commodity_prices
     },
     {
         name: "get_cities",
@@ -254,6 +266,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_cities
     },
     {
         name: "get_terminals",
@@ -267,6 +281,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_terminals
     },
     {
         name: "get_planets",
@@ -281,6 +297,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_planets
     },
     {
         name: "get_moons",
@@ -295,6 +313,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_moons
     },
     {
         name: "get_orbits",
@@ -309,6 +329,8 @@ export const functions = [
             },
             required: [],
         },
+        type: "function",
+        function: async () => await get_orbits
     },
     {
         name: "get_space_stations",
@@ -326,5 +348,7 @@ export const functions = [
             },
             required: [],
         },
-    },
+        type: "function",
+        function: async () => await get_space_stations
+    }
 ];
