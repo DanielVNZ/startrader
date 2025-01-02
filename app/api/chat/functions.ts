@@ -173,7 +173,7 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
 }
 
-export async function runFunction(name: string, args: Record<string, any>, toolChoice?: string) {
+export async function runFunction(name: string, args: Record<string, any>) {
     switch (name) {
         case "data_extract":
             return await data_extract();
