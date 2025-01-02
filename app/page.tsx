@@ -39,11 +39,13 @@ export default function Chat() {
     },
   });
 
+  // removes scrollbar for the main chat section
   useEffect(() => {
     const main = document.querySelector('main');
     if (main) {
       main.style.overflow = 'auto';
-      main.style.scrollbarWidth = 'none';
+      // Add a class to handle scrollbar hiding
+      main.classList.add('no-scrollbar');
     }
   }, []);
 

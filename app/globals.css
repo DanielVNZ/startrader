@@ -12,7 +12,7 @@ main {
   main::-webkit-scrollbar {
     display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
   }
-  
+
   html, body {
     margin: 0;
     padding: 0;
@@ -22,5 +22,14 @@ main {
   body {
     overflow: auto; /* Restore scrolling on the body if needed */
   }
+  
+  .no-scrollbar {
+    scrollbar-width: none; /* Hides scrollbar for Firefox */
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
+  }
+  
   
   
