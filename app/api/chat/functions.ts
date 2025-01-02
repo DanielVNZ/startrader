@@ -251,7 +251,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_commodity_prices
+        function: async (args: Record<string, any>) => await get_commodity_prices(args)
     },
     {
         name: "get_cities",
@@ -267,7 +267,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_cities
+        function: async (args: Record<string, any>) => await get_cities(args)
     },
     {
         name: "get_terminals",
@@ -282,7 +282,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_terminals
+        function: async (args: Record<string, any>) => await get_terminals(args)
     },
     {
         name: "get_planets",
@@ -298,7 +298,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_planets
+        function: async (args: Record<string, any>) => await get_planets(args)
     },
     {
         name: "get_moons",
@@ -314,7 +314,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_moons
+        function: async (args: Record<string, any>) => await get_moons(args)
     },
     {
         name: "get_orbits",
@@ -330,7 +330,7 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_orbits
+        function: async (args: Record<string, any>) => await get_orbits(args)
     },
     {
         name: "get_space_stations",
@@ -349,6 +349,6 @@ export const functions: Array<any> = [
             required: [],
         },
         type: "function",
-        function: async () => await get_space_stations
+        function: async (args: Record<string, any>) => await get_space_stations(args)
     }
 ];
