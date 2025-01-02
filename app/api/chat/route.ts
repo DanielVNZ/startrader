@@ -302,7 +302,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
     const stream = new ReadableStream({
         async start(controller) {
             const response = await openai.chat.completions.create({
-                model: "gpt-4o-mini",
+                model: "gpt-4o",
                 messages: extendedMessages,
                 stream: true,
                 functions,
