@@ -106,15 +106,6 @@ export async function runFunction(name: string, args: Record<string, any>) {
             throw new Error(`Function ${name} is not defined.`);
         }
 
-        // Check if the function has parameters
-        if (functionSchema.parameters) {
-            const paramKeys = Object.keys(functionSchema.parameters.properties || {});
-
-            // Enforce that at least one parameter is provided if the function has parameters
-            if (paramKeys.length > 0 && Object.keys(args).length === 0) {
-                throw new Error(`At least one parameter is required for function ${name}.`);
-            }
-        }
 
         let result;
         switch (name) {
