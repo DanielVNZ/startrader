@@ -295,8 +295,8 @@ ID: 160, Name: Zip, Commodity Code: ZIP
               { name, arguments: args }: { name: string; arguments: any },
               createFunctionCallMessages: (result: any) => any
           ) => {
-              const result = await runFunction(name, args);
-              const newMessages = createFunctionCallMessages(result);
+              await runFunction(name, args);
+              const newMessages = createFunctionCallMessages({});
   
               const response = await openai.chat.completions.create({
                   model: "gpt-4",
@@ -304,7 +304,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                   messages: [...extendedMessages, ...newMessages],
               });
   
-              const reader = response as unknown as ReadableStreamDefaultReader;
+              const reader = (response as unknown as { body: ReadableStream }).body?.getReader();
               if (!reader) throw new Error("Response stream reader unavailable.");
   
               while (true) {
@@ -314,7 +314,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
               }
           };
   
-          const reader = initialResponse as unknown as ReadableStreamDefaultReader;
+          const reader = (initialResponse as unknown as { body: ReadableStream }).body?.getReader();
           if (!reader) throw new Error("Initial response stream reader unavailable.");
   
           while (true) {
@@ -340,6 +340,9 @@ ID: 160, Name: Zip, Commodity Code: ZIP
   return new Response(stream, {
       headers: { "Content-Type": "text/event-stream" },
   });
+  
+  
+  
   
   
   
