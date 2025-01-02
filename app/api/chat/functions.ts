@@ -181,7 +181,7 @@ export async function runFunction(name: string, args: Record<string, any>) {
 
 
 
-export const tools: Array<any> = [
+export const tools = [
     {
         name: "data_extract",
         description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
