@@ -29,12 +29,12 @@ export default function Chat() {
         va.track("Rate limited");
         return;
       }
-  
+
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let done = false;
-      let aggregatedMessage = ""; // Temporary storage for the full message
-  
+      let aggregatedMessage = ""; // Aggregate chunks for a single message
+
       if (reader) {
         while (!done) {
           const { value, done: isDone } = await reader.read();
@@ -42,9 +42,10 @@ export default function Chat() {
           if (value) {
             const chunk = decoder.decode(value, { stream: true });
             console.log("Streamed chunk:", chunk);
-            aggregatedMessage += chunk; // Aggregate chunks for a single message
+            aggregatedMessage += chunk; // Combine chunks
           }
         }
+
         // Append the complete message once streaming is done
         setMessages((prev) => [
           ...prev,
@@ -61,6 +62,18 @@ export default function Chat() {
   });
 
   const disabled = isLoading || input.length === 0;
+
+  const handleUserSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.trim()) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", content: input.trim() },
+      ]);
+      handleSubmit();
+      setInput("");
+    }
+  };
 
   // State for Dark/Light mode
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -327,7 +340,7 @@ export default function Chat() {
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
             ref={formRef}
-            onSubmit={handleSubmit}
+            onSubmit={handleUserSubmit}
             className="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
           >
             <Textarea
