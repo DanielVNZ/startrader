@@ -90,8 +90,7 @@ export default function Chat() {
       className="fixed top-0 left-0 w-full z-50 top-bar"
       style={{
        height: "96px",
-       background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0))",
-       pointerEvents: "none", // Prevent interaction
+       background: "linear-gradient(to bottom, hsla(229, 86.50%, 50.60%, 0.63), rgba(255, 255, 255, 0))",
      }}
     >
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
@@ -296,8 +295,7 @@ export default function Chat() {
       className="fixed bottom-0 left-0 w-full z-50 bottom-bar"
       style={{
         height: "96px",
-        background: "linear-gradient(to top, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0))",
-        pointerEvents: "none", // Prevent interaction
+        background: "linear-gradient(to bottom, hsla(229, 86.50%, 50.60%, 0.63), rgba(255, 255, 255, 0))",
      }}
     >
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
