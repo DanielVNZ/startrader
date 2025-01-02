@@ -105,13 +105,13 @@ export default function Chat() {
           </div>
 
           {/* Page Title */}
-          <h1 className="text-green-500 text-lg font-bold">
+          <h1 className="text-black-500 dark:text-white-500 text-lg font-bold">
             Star Trader - Powered By{" "}
             <a
               href="https://uexcorp.space"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-green-700"
+              className="underline hover:text-blue-700 text-blue-500"
             >
               UEXCorp.Space
             </a>
@@ -200,16 +200,15 @@ export default function Chat() {
         ) : (
           <div className="text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md max-w-screen-md mx-auto space-y-4">
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-              Welcome to <span className="text-green-500">Star Trader</span>
+              Welcome to <span className="text-blue-500">Star Trader</span>
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              Your go-to assistant for planning trade routes and accessing
-              accurate commodity prices for specific locations.
+              Click the ⚠️ icon to view the recent change log and known issues.
             </p>
             <div className="space-y-2">
               <p className="text-gray-600 dark:text-gray-300">
                 <span className="font-semibold text-gray-800 dark:text-gray-100">
-                  Help improve data:
+                  Help improve the data:
                 </span>{" "}
                 <a
                   href="https://uexcorp.space/data/signup"
@@ -254,6 +253,12 @@ export default function Chat() {
                 >
                   Ko-fi
                 </a>
+                <p>
+                  This service is not cheap to run. Please consider donating if you use this tool oftern. 
+                  <p>
+                  Thank you!
+                  </p>
+                </p>
               </p>
             </div>
           </div>
@@ -267,9 +272,9 @@ export default function Chat() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
             <button
               onClick={() => setShowDonateModal(false)}
-              className="absolute top-2 right-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              className="absolute top-2 right-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
             >
-              ✖
+              ✖ Close
             </button>
             <iframe
               id="kofiframe"
