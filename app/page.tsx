@@ -78,7 +78,9 @@ export default function Chat() {
     return () => debounceScroll.cancel();
   }, [messages]);
 
-  
+  useEffect(() => {
+    console.log("Messages:", messages);
+  }, [messages]);
 
   return (
     <main
