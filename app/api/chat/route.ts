@@ -310,12 +310,12 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                 max_tokens: MAX_OUTPUT_TOKENS,
             });
 
-            console.log("API Response:", response);
 
             // Process the streamed response chunks
             for await (const chunk of response) {
                 const text = chunk.choices[0]?.delta?.content || ""; // Extract content
                 if (text) {
+                    console.log("Extracted Text:", text); 
                     controller.enqueue(new TextEncoder().encode(text)); // Encode text and enqueue
                 }
             }
