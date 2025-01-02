@@ -283,7 +283,7 @@ export default function Chat() {
       )}
 
       {/* Footer Section */}
-      
+      <div className="fixed bottom-0 w-full px-4 py-5 sm:px-6">
         {/* Input Form */}
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
@@ -331,7 +331,7 @@ export default function Chat() {
             </button>
           </form>
         </div>
-      
+      </div>
     </main>
   );
 }
