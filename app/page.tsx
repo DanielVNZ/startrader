@@ -73,21 +73,10 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main
-      className={clsx(
-        "flex flex-col items-center justify-between min-h-screen",
-        isDarkMode ? "bg-dark-blue" : "bg-light-blue",
-        "text-black dark:text-white"
-      )}
-    >
+    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full shadow-md z-50">
-        <div
-          className={clsx(
-            "flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto",
-            isDarkMode ? "bg-dark-blue" : "bg-light-blue"
-          )}
-        >
+      <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
+        <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
             {/* Dark Mode Toggle */}
@@ -277,12 +266,7 @@ export default function Chat() {
             <iframe
               id="kofiframe"
               src="https://ko-fi.com/danielvnz/?hidefeed=true&widget=true&embed=true&preview=true"
-              style={{
-                border: "none",
-                width: "100%",
-                padding: "4px",
-                background: "#f9f9f9",
-              }}
+              style={{ border: "none", width: "100%", padding: "4px", background: "#f9f9f9" }}
               height="712"
               title="danielvnz"
             ></iframe>
