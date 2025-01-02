@@ -87,9 +87,10 @@ export default function Chat() {
         height: "100vh",
         overflow: "auto",
         scrollbarWidth: "none",
+        
       }}
+      
     >
-
       {/* Top Bar */}
       <div
       className="fixed top-0 left-0 w-full z-50 top-bar"
