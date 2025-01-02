@@ -1,7 +1,6 @@
 import { OpenAI } from "openai";
 import { tools, runFunction } from "./functions";
 
-// Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -11,7 +10,6 @@ export const runtime = "edge";
 export async function POST(req: Request) {
     const { messages } = await req.json();
 
-    // Custom GPT instructions as a system message
     const systemMessage = {
         role: "system",
         content: `
@@ -275,67 +273,76 @@ ID: 159, Name: Thrust, Commodity Code: THRU
 ID: 160, Name: Zip, Commodity Code: ZIP
 
 
- ` // Add your content here
+ `,
     };
 
     const extendedMessages = [systemMessage, ...messages];
 
-    // Create the initial OpenAI API request
     const stream = new ReadableStream({
-      async start(controller) {
-          try {
-              const response = await openai.chat.completions.create({
-                  model: "gpt-4-turbo",
-                  messages: extendedMessages,
-                  stream: true,
-                  tools, // Use tools instead of functions
-                  tool_choice: "auto", // Enable automatic tool selection
-              });
+        async start(controller) {
+            try {
+                const response = await openai.chat.completions.create({
+                    model: "gpt-4-turbo",
+                    messages: extendedMessages,
+                    stream: true,
+                    tools,
+                    tool_choice: "auto",
+                });
 
-              for await (const chunk of response) {
-                  const toolCalls = chunk.choices[0]?.delta?.tool_calls;
+                for await (const chunk of response) {
+                    const toolCalls = chunk.choices[0]?.delta?.tool_calls;
 
-                  if (Array.isArray(toolCalls)) {
-                      for (const toolCall of toolCalls) {
-                          const name = toolCall.function?.name;
-                          const args = toolCall.function?.arguments ? JSON.parse(toolCall.function.arguments) : {};
+                    if (Array.isArray(toolCalls)) {
+                        for (const toolCall of toolCalls) {
+                            const name = toolCall.function?.name;
+                            let args = {};
 
-                          if (name) {
-                              try {
-                                  const result = await runFunction(name, args);
-                                  controller.enqueue(new TextEncoder().encode(JSON.stringify(result)));
-                              } catch (error) {
-                                  controller.enqueue(
-                                      new TextEncoder().encode(
-                                          `[ERROR] ${error instanceof Error ? error.message : "Unknown error"}`
-                                      )
-                                  );
-                              }
-                          }
-                      }
-                  } else {
-                      const text = chunk.choices[0]?.delta?.content || "";
-                      if (text) {
-                          controller.enqueue(new TextEncoder().encode(text));
-                      }
-                  }
-              }
+                            try {
+                                args = toolCall.function?.arguments
+                                    ? JSON.parse(toolCall.function.arguments)
+                                    : {};
+                            } catch (jsonError) {
+                                console.error(`[ERROR] Invalid JSON arguments for tool: ${name}`, jsonError);
+                                controller.enqueue(
+                                    new TextEncoder().encode(`[ERROR] Invalid arguments for tool: ${name}`)
+                                );
+                                continue;
+                            }
 
-              controller.close();
-          } catch (error) {
-              const errorMessage =
-                  error instanceof Error ? error.message : "An unknown error occurred during streaming.";
-              console.error("[ERROR] Failed to stream response:", errorMessage);
-              controller.error(new Error(errorMessage));
-          }
-      },
-  });
+                            if (name) {
+                                try {
+                                    const result = await runFunction(name, args);
+                                    controller.enqueue(
+                                        new TextEncoder().encode(JSON.stringify({ tool: name, result }))
+                                    );
+                                } catch (error) {
+                                    console.error(`[ERROR] Tool execution failed: ${name}`, error);
+                                    controller.enqueue(
+                                        new TextEncoder().encode(`[ERROR] Failed to execute tool: ${name}`)
+                                    );
+                                }
+                            }
+                        }
+                    } else {
+                        const text = chunk.choices[0]?.delta?.content || "";
+                        if (text) {
+                            controller.enqueue(new TextEncoder().encode(text));
+                        }
+                    }
+                }
 
-  // Use the stream in the response
-  return new Response(stream, {
-      status: 200,
-      headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-      },
-  });
+                controller.close();
+            } catch (error) {
+                console.error("[ERROR] Streaming failed:", error);
+                controller.error(new Error("Streaming error occurred"));
+            }
+        },
+    });
+
+    return new Response(stream, {
+        status: 200,
+        headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+        },
+    });
 }
