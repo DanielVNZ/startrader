@@ -183,26 +183,62 @@ export async function runFunction(name: string, args: Record<string, any>) {
 
 export const tools = [
     {
+        type: "function",
         name: "data_extract",
         description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+        },
     },
     {
+        type: "function",
         name: "get_commodities",
         description: "Fetch a list of all commodities including specifics like legality and market price.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+        },
     },
     {
+        type: "function",
         name: "get_commodities_prices_all",
         description: "Fetch a list of all commodity prices and their terminal availability. USE AS A LAST RESORT.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+        },
     },
     {
+        type: "function",
         name: "get_commodities_raw_prices_all",
         description: "Fetch a list of all raw commodity prices and their terminal availability.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+        },
     },
     {
+        type: "function",
         name: "get_all_terminals",
         description: "Fetch a list of all terminal information to help plan trade routes or find locations to sell.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+            additionalProperties: false,
+        },
     },
     {
+        type: "function",
         name: "get_commodity_prices",
         description: "Fetch specific commodity prices using query parameters.",
         parameters: {
@@ -216,9 +252,11 @@ export const tools = [
                 commodity_code: { type: "string", description: "Commodity code." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_cities",
         description: "Fetch a list of cities with optional filters.",
         parameters: {
@@ -230,9 +268,11 @@ export const tools = [
                 id_moon: { type: "integer", description: "Moon ID." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_terminals",
         description: "Fetch terminals using query parameters.",
         parameters: {
@@ -243,9 +283,11 @@ export const tools = [
                 name: { type: "string", description: "Terminal name." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_planets",
         description: "Fetch planets with optional filters.",
         parameters: {
@@ -257,9 +299,11 @@ export const tools = [
                 is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_moons",
         description: "Fetch moons using query parameters.",
         parameters: {
@@ -271,9 +315,11 @@ export const tools = [
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_orbits",
         description: "Fetch orbit data using query parameters.",
         parameters: {
@@ -285,9 +331,11 @@ export const tools = [
                 is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
             required: [],
+            additionalProperties: false,
         },
     },
     {
+        type: "function",
         name: "get_space_stations",
         description: "Fetch space station data using query parameters.",
         parameters: {
@@ -302,7 +350,8 @@ export const tools = [
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
             required: [],
+            additionalProperties: false,
         },
-    }
+    },
 ];
 
