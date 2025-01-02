@@ -295,7 +295,8 @@ export default function Chat() {
       className="fixed bottom-0 left-0 w-full z-50 bottom-bar"
       style={{
         height: "96px",
-        background: "linear-gradient(to bottom, hsla(229, 86.50%, 50.60%, 0.63), rgba(255, 255, 255, 0))",
+        background: "linear-gradient(to bottom, rgba(255, 255, 255, 0), hsla(229, 86.50%, 50.60%, 0.63))";
+
      }}
     >
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
