@@ -81,8 +81,13 @@ export default function Chat() {
       )}
     >
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
-        <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
+      <div className="fixed top-0 left-0 w-full shadow-md z-50">
+        <div
+          className={clsx(
+            "flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto",
+            isDarkMode ? "bg-dark-blue" : "bg-light-blue"
+          )}
+        >
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
             {/* Dark Mode Toggle */}
