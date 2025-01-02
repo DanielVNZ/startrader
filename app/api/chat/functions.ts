@@ -122,6 +122,12 @@ async function fetchWithCache(endpoint: string, queryParams: Record<string, any>
     return data;
 }
 
+function validateQueryParams(queryParams: Record<string, any>): void {
+    if (!queryParams || Object.keys(queryParams).length === 0) {
+        throw new Error("At least one query parameter is required.");
+    }
+}
+
 // API Fetch Functions with Cache
 async function data_extract() {
     const url = "https://api.uexcorp.space/2.0/data_extract?data=commodities_routes";
@@ -152,10 +158,12 @@ async function get_commodities() {
 }
 
 async function get_commodity_prices(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_prices", queryParams);
 }
 
 async function get_cities(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/cities", queryParams);
 }
 
@@ -164,22 +172,27 @@ async function get_all_terminals() {
 }
 
 async function get_terminals(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/terminals", queryParams);
 }
 
 async function get_planets(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/planets", queryParams);
 }
 
 async function get_moons(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/moons", queryParams);
 }
 
 async function get_orbits(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/orbits", queryParams);
 }
 
 async function get_space_stations(queryParams: Record<string, any> = {}) {
+    validateQueryParams(queryParams);
     return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
 }
 
@@ -239,7 +252,7 @@ export const functions = [
    },
     {
          name: "get_commodity_prices",
-         description: "Fetch prices for specific commodities based on various query parameters. Note that you MUST use at least one property is required. do not run this API without atleast 1 property. if you dont have it, check your knowledge base to compare the commodity provided to find its commodity code.",
+         description: "This API requires ONE query parameter, you must provide atleast one of these.",
          parameters: {
             type: "object",
              properties: {
@@ -273,7 +286,7 @@ export const functions = [
     },
     {
         name: "get_cities",
-        description: "Fetch city data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these.",
         parameters: {
             type: "object",
             properties: {
@@ -299,7 +312,7 @@ export const functions = [
     },
     {
         name: "get_terminals",
-        description: "Fetch terminal data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these.",
         parameters: {
             type: "object",
             properties: {
@@ -321,7 +334,7 @@ export const functions = [
     },
     {
         name: "get_planets",
-        description: "Fetch planet data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these.",
         parameters: {
             type: "object",
             properties: {
@@ -347,7 +360,7 @@ export const functions = [
     },
     {
         name: "get_moons",
-        description: "Fetch moon data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these.",
         parameters: {
             type: "object",
             properties: {
@@ -373,7 +386,7 @@ export const functions = [
     },
     {
         name: "get_orbits",
-        description: "Fetch orbit data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these..",
         parameters: {
             type: "object",
             properties: {
@@ -399,7 +412,7 @@ export const functions = [
     },
     {
         name: "get_space_stations",
-        description: "Fetch space station data based on optional filters. Note that you MUST use at least one filter.",
+        description: "This API requires ONE query parameter, you must provide atleast one of these.",
         parameters: {
             type: "object",
             properties: {
