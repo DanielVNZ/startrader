@@ -283,7 +283,7 @@ export default function Chat() {
       )}
 
       {/* Footer Section */}
-      <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100 to-gray-100 dark:via-gray-800 dark:to-gray-900 px-4 py-5 sm:px-6">
+      <div className="fixed bottom-0 w-full bg-gradient-to-b from-transparent via-gray-100/50 to-gray-100/50 dark:via-gray-800/50 dark:to-gray-900/50 px-4 py-5 sm:px-6">
         {/* Input Form */}
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
