@@ -290,15 +290,16 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                 });
 
                 for await (const chunk of response) {
-                    const toolCall = chunk.choices[0]?.delta?.function_call;
+                    const functionCall = chunk.choices[0]?.delta?.function_call;
 
-                    if (toolCall) {
-                        const name = toolCall.name;
+                    if (functionCall) {
+                        // Handle function calls
+                        const name = functionCall.name;
                         let args = {};
 
                         try {
-                            args = toolCall.arguments
-                                ? JSON.parse(toolCall.arguments)
+                            args = functionCall.arguments
+                                ? JSON.parse(functionCall.arguments)
                                 : {};
                         } catch (jsonError) {
                             controller.enqueue(
@@ -320,7 +321,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                                     content: JSON.stringify(result),
                                 };
 
-                                // Ask the AI to interpret and respond
+                                // Ask AI to interpret and respond naturally
                                 const followUpResponse = await openai.chat.completions.create({
                                     model: "gpt-4-turbo",
                                     messages: [...extendedMessages, resultMessage],
@@ -340,6 +341,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                             }
                         }
                     } else {
+                        // Normal AI response for general chat
                         const text = chunk.choices[0]?.delta?.content || "";
                         if (text) {
                             controller.enqueue(new TextEncoder().encode(text));
