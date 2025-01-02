@@ -29,12 +29,12 @@ export default function Chat() {
         va.track("Rate limited");
         return;
       }
-
+  
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let done = false;
-      let fullText = "";
-
+      let aggregatedMessage = ""; // Temporary storage for the full message
+  
       if (reader) {
         while (!done) {
           const { value, done: isDone } = await reader.read();
@@ -42,16 +42,15 @@ export default function Chat() {
           if (value) {
             const chunk = decoder.decode(value, { stream: true });
             console.log("Streamed chunk:", chunk);
-            fullText += chunk;
-            // Update messages as chunks arrive
-            setMessages((prev) => [
-              ...prev,
-              { role: "assistant", content: chunk.trim() },
-            ]);
+            aggregatedMessage += chunk; // Aggregate chunks for a single message
           }
         }
+        // Append the complete message once streaming is done
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: aggregatedMessage.trim() },
+        ]);
       }
-      console.log("Full message:", fullText);
     },
     onError: (error) => {
       va.track("Chat errored", {
