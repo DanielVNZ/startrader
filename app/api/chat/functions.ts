@@ -166,161 +166,126 @@ export async function runFunction(name: string, args: Record<string, any>) {
 
 export const tools: Array<any> = [
     {
-        type: "function",
-        function: {
-            name: "data_extract",
-            description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
-        },
+        name: "data_extract",
+        description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
     },
     {
-        type: "function",
-        function: {
-            name: "get_commodities",
-            description: "Fetch a list of all commodities including specifics like legality and market price.",
-        },
+        name: "get_commodities",
+        description: "Fetch a list of all commodities including specifics like legality and market price.",
     },
     {
-        type: "function",
-        function: {
-            name: "get_commodities_prices_all",
-            description: "Fetch a list of all commodity prices and their terminal availability. USE AS A LAST RESPORT. Try get_",
-        },
+        name: "get_commodities_prices_all",
+        description: "Fetch a list of all commodity prices and their terminal availability. USE AS A LAST RESORT.",
     },
     {
-        type: "function",
-        function: {
-            name: "get_commodities_raw_prices_all",
-            description: "Fetch a list of all raw commodity prices and their terminal availability. provide the user with the requested proice of their commodity based on their query. ",
-        },
+        name: "get_commodities_raw_prices_all",
+        description: "Fetch a list of all raw commodity prices and their terminal availability.",
     },
     {
-        type: "function",
-        function: {
-            name: "get_all_terminals",
-            description: "Fetch a list of all terminal information. this can help plan trade routes or find locations to sell ",
-        },
+        name: "get_all_terminals",
+        description: "Fetch a list of all terminal information to help plan trade routes or find locations to sell.",
     },
     {
-        type: "function",
-        function: {
-            name: "get_commodity_prices",
-            description: "Fetch specific commodity prices using query parameters. this will help you find locations to sell commodity, for example searching a commdoity name GOLD will tell you the locations of where to sell GOLD that can be passed on to the user. ",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_terminal: { type: "string", description: "Comma-separated terminal IDs." },
-                    id_commodity: { type: "integer", description: "Commodity ID." },
-                    terminal_name: { type: "string", description: "Terminal name." },
-                    commodity_name: { type: "string", description: "Commodity name." },
-                    terminal_code: { type: "string", description: "Terminal code." },
-                    commodity_code: { type: "string", description: "Commodity code." },
-                },
-                required: ["id_commodity"],
+        name: "get_commodity_prices",
+        description: "Fetch specific commodity prices using query parameters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_terminal: { type: "string", description: "Comma-separated terminal IDs." },
+                id_commodity: { type: "integer", description: "Commodity ID." },
+                terminal_name: { type: "string", description: "Terminal name." },
+                commodity_name: { type: "string", description: "Commodity name." },
+                terminal_code: { type: "string", description: "Terminal code." },
+                commodity_code: { type: "string", description: "Commodity code." },
             },
+            required: ["id_commodity"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_cities",
-            description: "Fetch a list of cities with optional filters.",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_planet: { type: "integer", description: "Planet ID." },
-                    id_orbit: { type: "integer", description: "Orbit ID." },
-                    id_moon: { type: "integer", description: "Moon ID." },
-                },
-                required: ["id_star_system"],
+        name: "get_cities",
+        description: "Fetch a list of cities with optional filters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_orbit: { type: "integer", description: "Orbit ID." },
+                id_moon: { type: "integer", description: "Moon ID." },
             },
+            required: ["id_star_system"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_terminals",
-            description: "Fetch terminals using query parameters. to search a specific terminal ",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_planet: { type: "integer", description: "Planet ID." },
-                    name: { type: "string", description: "Terminal name." },
-                },
-                required: ["id_star_system"],
+        name: "get_terminals",
+        description: "Fetch terminals using query parameters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                name: { type: "string", description: "Terminal name." },
             },
+            required: ["id_star_system"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_planets",
-            description: "Fetch planets with optional filters.",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_faction: { type: "integer", description: "Faction ID." },
-                    id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
-                    is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
-                },
-                required: ["id_star_system"],
+        name: "get_planets",
+        description: "Fetch planets with optional filters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
+                is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
+            required: ["id_star_system"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_moons",
-            description: "Fetch moons using query parameters.",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_planet: { type: "integer", description: "Planet ID." },
-                    id_faction: { type: "integer", description: "Faction ID." },
-                    id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
-                },
-                required: ["id_star_system"],
+        name: "get_moons",
+        description: "Fetch moons using query parameters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
+            required: ["id_star_system"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_orbits",
-            description: "Fetch orbit data using query parameters.",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_faction: { type: "integer", description: "Faction ID." },
-                    id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
-                    is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
-                },
-                required: ["id_star_system"],
+        name: "get_orbits",
+        description: "Fetch orbit data using query parameters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
+                is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
+            required: ["id_star_system"],
         },
     },
     {
-        type: "function",
-        function: {
-            name: "get_space_stations",
-            description: "Fetch space station data using query parameters.",
-            parameters: {
-                type: "object",
-                properties: {
-                    id_star_system: { type: "integer", description: "Star system ID." },
-                    id_planet: { type: "integer", description: "Planet ID." },
-                    id_orbit: { type: "integer", description: "Orbit ID." },
-                    id_moon: { type: "integer", description: "Moon ID." },
-                    id_city: { type: "integer", description: "City ID." },
-                    id_faction: { type: "integer", description: "Faction ID." },
-                    id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
-                },
-                required: ["id_star_system"],
+        name: "get_space_stations",
+        description: "Fetch space station data using query parameters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_orbit: { type: "integer", description: "Orbit ID." },
+                id_moon: { type: "integer", description: "Moon ID." },
+                id_city: { type: "integer", description: "City ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
+            required: ["id_star_system"],
         },
     }
 ];
+
