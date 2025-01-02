@@ -6,18 +6,11 @@ function log(message: string, data?: any) {
     console.log(`[LOG] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
 
-function validateQueryParams(queryParams: Record<string, any>): void {
-    if (!queryParams || Object.keys(queryParams).length === 0) {
-        log("Error: No query parameters provided.");
-        throw new Error("At least one query parameter is required.");
-    }
-    log("Validated query parameters.", queryParams);
-}
 
 
 
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
-    const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
+
 
 
  
@@ -189,7 +182,7 @@ export const tools: Array<any> = [
                     terminal_code: { type: "string", description: "Terminal code." },
                     commodity_code: { type: "string", description: "Commodity code." },
                 },
-                required: ["id_terminal"],
+                required: [],
             },
         },
     },
