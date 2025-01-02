@@ -289,6 +289,8 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     function_call: "auto",
                 });
 
+                let hasResponded = false;
+
                 for await (const chunk of response) {
                     const functionCall = chunk.choices[0]?.delta?.function_call;
 
@@ -304,7 +306,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                         } catch (jsonError) {
                             controller.enqueue(
                                 new TextEncoder().encode(
-                                    `[ERROR] Invalid arguments for function: ${name}`
+                                    `[ERROR] Invalid arguments for function: ${name}\n`
                                 )
                             );
                             continue;
@@ -330,27 +332,34 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
                                 const content = followUpResponse.choices[0]?.message?.content;
                                 if (content) {
+                                    hasResponded = true;
                                     controller.enqueue(new TextEncoder().encode(content));
                                 }
                             } catch (error) {
                                 controller.enqueue(
                                     new TextEncoder().encode(
-                                        `[ERROR] Failed to execute function: ${name}`
+                                        `[ERROR] Failed to execute function: ${name}\n`
                                     )
                                 );
                             }
                         }
                     } else {
-                        // Normal AI response for general chat
+                        // Handle normal AI responses
                         const text = chunk.choices[0]?.delta?.content || "";
                         if (text) {
+                            hasResponded = true;
                             controller.enqueue(new TextEncoder().encode(text));
                         }
                     }
                 }
 
+                if (!hasResponded) {
+                    controller.enqueue(new TextEncoder().encode("No response generated.\n"));
+                }
+
                 controller.close();
             } catch (error) {
+                console.error("[ERROR] Streaming failed:", error);
                 controller.error(new Error("Streaming error occurred"));
             }
         },
