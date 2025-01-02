@@ -315,7 +315,6 @@ ID: 160, Name: Zip, Commodity Code: ZIP
             for await (const chunk of response) {
                 const text = chunk.choices[0]?.delta?.content || ""; // Extract content
                 if (text) {
-                    console.log("Extracted Text:", text); 
                     controller.enqueue(new TextEncoder().encode(text)); // Encode text and enqueue
                 }
             }

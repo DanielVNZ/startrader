@@ -28,6 +28,7 @@ export default function Chat() {
         return;
       } else {
         va.track("Chat initiated");
+        console.log("Messages:", messages)
         scrollToBottom();
       }
     },
@@ -76,10 +77,6 @@ export default function Chat() {
     const debounceScroll = debounce(scrollToBottom, 100);
     debounceScroll();
     return () => debounceScroll.cancel();
-  }, [messages]);
-
-  useEffect(() => {
-    console.log("Messages:", messages);
   }, [messages]);
 
   return (
