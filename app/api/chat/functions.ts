@@ -198,7 +198,7 @@ export const tools: Array<any> = [
                 terminal_code: { type: "string", description: "Terminal code." },
                 commodity_code: { type: "string", description: "Commodity code." },
             },
-            required: ["id_commodity"],
+            required: [],
         },
     },
     {
@@ -212,7 +212,7 @@ export const tools: Array<any> = [
                 id_orbit: { type: "integer", description: "Orbit ID." },
                 id_moon: { type: "integer", description: "Moon ID." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     },
     {
@@ -225,7 +225,7 @@ export const tools: Array<any> = [
                 id_planet: { type: "integer", description: "Planet ID." },
                 name: { type: "string", description: "Terminal name." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     },
     {
@@ -239,7 +239,7 @@ export const tools: Array<any> = [
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
                 is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     },
     {
@@ -253,7 +253,7 @@ export const tools: Array<any> = [
                 id_faction: { type: "integer", description: "Faction ID." },
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     },
     {
@@ -267,7 +267,7 @@ export const tools: Array<any> = [
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
                 is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     },
     {
@@ -284,7 +284,7 @@ export const tools: Array<any> = [
                 id_faction: { type: "integer", description: "Faction ID." },
                 id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
-            required: ["id_star_system"],
+            required: [],
         },
     }
 ];
