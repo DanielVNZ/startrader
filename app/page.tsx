@@ -30,12 +30,11 @@ export default function Chat() {
         va.track("Rate limited");
         return;
       }
-      
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let done = false;
-      let aggregatedMessage = ""; // Aggregate chunks for a single message
+      let aggregatedMessage = "";
 
       if (reader) {
         while (!done) {
@@ -44,13 +43,10 @@ export default function Chat() {
           if (value) {
             const chunk = decoder.decode(value, { stream: true });
             console.log("Streamed chunk:", chunk);
-            aggregatedMessage += chunk; // Combine chunks
+            aggregatedMessage += chunk;
           }
-
-          
         }
 
-        // Append the complete message once streaming is done
         setMessages((prev) => [
           ...prev,
           { role: "assistant", content: aggregatedMessage.trim() },
@@ -72,14 +68,13 @@ export default function Chat() {
     if (input.trim()) {
       setMessages((prev) => [
         ...prev,
-        { role: "user", content: input.trim() },
+        { role: "user", content: input },
       ]);
       handleSubmit();
       setInput("");
     }
   };
 
-  // State for Dark/Light mode
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("theme") === "dark" ||
@@ -91,7 +86,6 @@ export default function Chat() {
     return false;
   });
 
-  // Apply the Dark/Light mode to the html element
   useEffect(() => {
     const htmlElement = document.documentElement;
     if (isDarkMode) {
