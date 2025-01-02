@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { functions, runFunction } from "./functions";
+import { functions } from "./functions";
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 export const runtime = "edge";
 
-const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+// const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(req: Request) {
    const { messages } = await req.json();
