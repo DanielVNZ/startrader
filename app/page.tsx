@@ -13,6 +13,7 @@ import Image from "next/image";
 import debounce from "lodash/debounce";
 import './globals.css'; 
 
+
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -38,6 +39,15 @@ export default function Chat() {
     },
   });
 
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main) {
+      main.style.overflow = 'auto';
+      main.style.scrollbarWidth = 'none';
+    }
+  }, []);
+
+  
   const disabled = isLoading || input.length === 0;
 
   // State for Dark/Light mode
@@ -75,6 +85,8 @@ export default function Chat() {
     debounceScroll();
     return () => debounceScroll.cancel();
   }, [messages]);
+
+  
 
   return (
     <main
