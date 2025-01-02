@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { tools, runFunction } from "./functions";
+import { functions, runFunction } from "./functions";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -285,7 +285,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     model: "gpt-4-turbo",
                     messages: extendedMessages,
                     stream: true,
-                    functions: tools, // Always include tools
+                    functions: functions, // Always include tools
                     function_call: "auto", // Let the AI decide if a function should be invoked
                 });
 
