@@ -73,7 +73,14 @@ export default function Chat() {
   }, [messages]);
 
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
+    <main
+      className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
+      style={{
+        backgroundImage: `url(${isDarkMode ? './darkmode.png' : './lightmode.png'})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
