@@ -11,9 +11,15 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
-// Importing Vanta.js and Three.js
+// Importing Three.js
 import * as THREE from "three";
 import WAVES from "vanta/dist/vanta.waves.min";
+
+declare global {
+  interface Window {
+    THREE: typeof THREE;
+  }
+}
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -56,17 +62,18 @@ export default function Chat() {
     }
     return false;
   });
+  
 
   // Fetch daily usage cost
   useEffect(() => {
     async function fetchUsage() {
       try {
-        const today = new Date().toISOString().split("T")[0]; // Get today's date
+        const today = new Date().toISOString().split("T")[0];
         const response = await fetch(
           `https://api.openai.com/v1/dashboard/billing/usage?start_date=${today}&end_date=${today}`,
           {
             headers: {
-              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your API key securely
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
             },
           }
         );
@@ -74,7 +81,7 @@ export default function Chat() {
         if (response.ok) {
           const data = await response.json();
           const totalUsage = data.total_usage || 0;
-          setUsageCost(totalUsage / 100); // Convert from cents to dollars
+          setUsageCost(totalUsage / 100);
         } else {
           console.error("Failed to fetch usage:", await response.text());
         }
@@ -100,10 +107,13 @@ export default function Chat() {
 
   // Initialize Vanta.js Waves Effect
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.THREE = THREE; // Add this to make THREE available globally
+    }
     if (!vantaEffect && vantaRef.current) {
       setVantaEffect(
         WAVES({
-          el: vantaRef.current, // Attach Vanta.js to the main container
+          el: vantaRef.current,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -111,14 +121,13 @@ export default function Chat() {
           minWidth: 200.0,
           scale: 1.0,
           scaleMobile: 1.0,
-          color: isDarkMode ? 0x2450 : 0x959af, // Adjust color based on theme
-          THREE: THREE, // Explicitly pass Three.js instance
+          color: isDarkMode ? 0x2450 : 0x959af,
+          THREE: THREE,
         })
       );
     }
-
     return () => {
-      if (vantaEffect) vantaEffect.destroy(); // Clean up Vanta.js effect on unmount
+      if (vantaEffect) vantaEffect.destroy();
     };
   }, [isDarkMode, vantaEffect]);
 
@@ -134,7 +143,8 @@ export default function Chat() {
 
   return (
     <main
-      ref={vantaRef} // Reference for Vanta.js
+      ref={vantaRef}
+      style={{ height: "100vh", width: "100%" }}
       className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
     >
       {/* Top Bar */}
@@ -142,15 +152,12 @@ export default function Chat() {
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
-            {/* Dark Mode Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               {isDarkMode ? "☀️" : "🌙"}
             </button>
-
-            {/* Refresh Button */}
             <button
               onClick={() => window.location.reload()}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -161,7 +168,7 @@ export default function Chat() {
 
           {/* Page Title */}
           <h1 className="text-green-500 text-lg font-bold">
-            Star Trader - Powered By{" "}
+            Star Trader - Powered By {" "}
             <a
               href="https://uexcorp.space"
               target="_blank"
@@ -183,7 +190,6 @@ export default function Chat() {
 
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
-            {/* Change Log and Known Issues Button */}
             <a
               href="/changelogandissues"
               target="_blank"
@@ -192,8 +198,6 @@ export default function Chat() {
             >
               ⚠️
             </a>
-
-            {/* Donate Button */}
             <button
               onClick={() => setShowDonateModal(true)}
               className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full p-2 shadow-md transition hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -205,10 +209,7 @@ export default function Chat() {
       </div>
 
       {/* Messages Container */}
-      <div
-        className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4"
-        style={{ paddingTop: "96px", paddingBottom: "96px" }}
-      >
+      <div className="flex-grow w-full max-w-screen-md overflow-y-auto px-5 sm:px-0 py-4 space-y-4" style={{ paddingTop: "96px", paddingBottom: "96px" }}>
         {messages.length > 0 ? (
           messages.map((message, i) => (
             <div
