@@ -76,7 +76,7 @@ export default function Chat() {
     <main
       className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
       style={{
-        backgroundImage: `url(${isDarkMode ? '/darkmode.png' : '/lightmode.png'})`,
+        backgroundImage: `url(${isDarkMode ? '/darkmode.svg' : '/lightmode.svg'})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
