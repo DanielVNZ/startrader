@@ -11,18 +11,11 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 
-// Importing Vanta.js and Three.js
-import * as THREE from "three";
-import WAVES from "vanta/dist/vanta.waves.min";
-
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const vantaRef = useRef<HTMLDivElement | null>(null); // Ref for Vanta.js container
-  const [vantaEffect, setVantaEffect] = useState<any>(null);
   const [showDonateModal, setShowDonateModal] = useState(false);
-  const [usageCost, setUsageCost] = useState<number | null>(null);
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
@@ -57,35 +50,6 @@ export default function Chat() {
     return false;
   });
 
-  // Fetch daily usage cost
-  useEffect(() => {
-    async function fetchUsage() {
-      try {
-        const today = new Date().toISOString().split("T")[0]; // Get today's date
-        const response = await fetch(
-          `https://api.openai.com/v1/dashboard/billing/usage?start_date=${today}&end_date=${today}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Replace with your API key securely
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const totalUsage = data.total_usage || 0;
-          setUsageCost(totalUsage / 100); // Convert from cents to dollars
-        } else {
-          console.error("Failed to fetch usage:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error fetching usage:", error);
-      }
-    }
-
-    fetchUsage();
-  }, []);
-
   // Apply the Dark/Light mode to the html element
   useEffect(() => {
     const htmlElement = document.documentElement;
@@ -97,30 +61,6 @@ export default function Chat() {
       localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
-
-  // Initialize Vanta.js Waves Effect
-  useEffect(() => {
-    if (!vantaEffect && vantaRef.current) {
-      setVantaEffect(
-        WAVES({
-          el: vantaRef.current, // Attach Vanta.js to the main container
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.0,
-          minWidth: 200.0,
-          scale: 1.0,
-          scaleMobile: 1.0,
-          color: isDarkMode ? 0x2450 : 0x959af, // Adjust color based on theme
-          THREE: THREE, // Explicitly pass Three.js instance
-        })
-      );
-    }
-
-    return () => {
-      if (vantaEffect) vantaEffect.destroy(); // Clean up Vanta.js effect on unmount
-    };
-  }, [isDarkMode, vantaEffect]);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -134,8 +74,11 @@ export default function Chat() {
 
   return (
     <main
-      ref={vantaRef} // Reference for Vanta.js
-      className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
+      className={clsx(
+        "flex flex-col items-center justify-between min-h-screen",
+        isDarkMode ? "bg-dark-blue" : "bg-light-blue",
+        "text-black dark:text-white"
+      )}
     >
       {/* Top Bar */}
       <div className="fixed top-0 left-0 w-full bg-white dark:bg-gray-800 shadow-md z-50">
@@ -171,15 +114,6 @@ export default function Chat() {
               UEXCorp.Space
             </a>
           </h1>
-
-          {/* Usage Counter */}
-          <div className="text-right">
-            {usageCost !== null && (
-              <div className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-full px-3 py-1 shadow-md">
-                Usage: <span className="font-bold">${usageCost.toFixed(2)}</span>
-              </div>
-            )}
-          </div>
 
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
