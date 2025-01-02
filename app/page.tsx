@@ -82,6 +82,9 @@ export default function Chat() {
         backgroundImage: `url(${isDarkMode ? '/darkmode.svg' : '/lightmode.svg'})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
+        height: "100vh",
       }}
     >
 
