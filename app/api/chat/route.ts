@@ -286,41 +286,57 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     messages: extendedMessages,
                     stream: true,
                     tools,
-                    tool_choice: "auto",
+                    function_call: "auto",
                 });
 
                 for await (const chunk of response) {
-                    const toolCalls = chunk.choices[0]?.delta?.tool_calls;
+                    const toolCall = chunk.choices[0]?.delta?.function_call;
 
-                    if (Array.isArray(toolCalls)) {
-                        for (const toolCall of toolCalls) {
-                            const name = toolCall.function?.name;
-                            let args = {};
+                    if (toolCall) {
+                        const name = toolCall.name;
+                        let args = {};
 
+                        try {
+                            args = toolCall.arguments
+                                ? JSON.parse(toolCall.arguments)
+                                : {};
+                        } catch (jsonError) {
+                            controller.enqueue(
+                                new TextEncoder().encode(
+                                    `[ERROR] Invalid arguments for function: ${name}`
+                                )
+                            );
+                            continue;
+                        }
+
+                        if (name) {
                             try {
-                                args = toolCall.function?.arguments
-                                    ? JSON.parse(toolCall.function.arguments)
-                                    : {};
-                            } catch (jsonError) {
-                                console.error(`[ERROR] Invalid JSON arguments for tool: ${name}`, jsonError);
-                                controller.enqueue(
-                                    new TextEncoder().encode(`[ERROR] Invalid arguments for tool: ${name}`)
-                                );
-                                continue;
-                            }
+                                const result = await runFunction(name, args);
 
-                            if (name) {
-                                try {
-                                    const result = await runFunction(name, args);
-                                    controller.enqueue(
-                                        new TextEncoder().encode(JSON.stringify({ tool: name, result }))
-                                    );
-                                } catch (error) {
-                                    console.error(`[ERROR] Tool execution failed: ${name}`, error);
-                                    controller.enqueue(
-                                        new TextEncoder().encode(`[ERROR] Failed to execute tool: ${name}`)
-                                    );
+                                // Add tool results back to the conversation
+                                const resultMessage = {
+                                    role: "function",
+                                    name,
+                                    content: JSON.stringify(result),
+                                };
+
+                                // Ask the AI to interpret and respond
+                                const followUpResponse = await openai.chat.completions.create({
+                                    model: "gpt-4-turbo",
+                                    messages: [...extendedMessages, resultMessage],
+                                    max_tokens: 500,
+                                });
+
+                                const content = followUpResponse.choices[0]?.message?.content;
+                                if (content) {
+                                    controller.enqueue(new TextEncoder().encode(content));
                                 }
+                            } catch (error) {
+                                controller.enqueue(
+                                    new TextEncoder().encode(
+                                        `[ERROR] Failed to execute function: ${name}`
+                                    )
+                                );
                             }
                         }
                     } else {
@@ -333,7 +349,6 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
                 controller.close();
             } catch (error) {
-                console.error("[ERROR] Streaming failed:", error);
                 controller.error(new Error("Streaming error occurred"));
             }
         },
