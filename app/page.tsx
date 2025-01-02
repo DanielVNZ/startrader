@@ -13,26 +13,45 @@ import Image from "next/image";
 import debounce from "lodash/debounce";
 import './globals.css'; 
 
-
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [showDonateModal, setShowDonateModal] = useState(false);
+  const [messages, setMessages] = useState<
+    { role: "user" | "assistant"; content: string }[]
+  >([]);
 
-  const { messages, input, setInput, handleSubmit, isLoading } = useChat({
-    onResponse: (response) => {
-      console.log("Response:", response)
-      console.log("Messages:", messages)
+  const { input, setInput, handleSubmit, isLoading } = useChat({
+    onResponse: async (response) => {
       if (response.status === 429) {
         toast.error("You have reached your request limit for the day");
         va.track("Rate limited");
         return;
-      } else {
-        va.track("Chat initiated");
-        console.log("Messages 2 :", messages)
-        scrollToBottom();
       }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let fullText = "";
+
+      if (reader) {
+        while (!done) {
+          const { value, done: isDone } = await reader.read();
+          done = isDone;
+          if (value) {
+            const chunk = decoder.decode(value, { stream: true });
+            console.log("Streamed chunk:", chunk);
+            fullText += chunk;
+            // Update messages as chunks arrive
+            setMessages((prev) => [
+              ...prev,
+              { role: "assistant", content: chunk.trim() },
+            ]);
+          }
+        }
+      }
+      console.log("Full message:", fullText);
     },
     onError: (error) => {
       va.track("Chat errored", {
@@ -42,7 +61,6 @@ export default function Chat() {
     },
   });
 
-  
   const disabled = isLoading || input.length === 0;
 
   // State for Dark/Light mode
@@ -93,16 +111,15 @@ export default function Chat() {
         height: "100vh",
         overflow: "auto",
       }}
-      
     >
       {/* Top Bar */}
       <div
-      className="fixed top-0 left-0 w-full z-50 top-bar"
-      style={{
-       height: "96px",
-       background: "linear-gradient(to bottom, hsla(236, 93.80%, 38.20%), rgba(0, 0, 0, 0))",
-     }}
-    >
+        className="fixed top-0 left-0 w-full z-50 top-bar"
+        style={{
+          height: "96px",
+          background: "linear-gradient(to bottom, hsla(236, 93.80%, 38.20%), rgba(0, 0, 0, 0))",
+        }}
+      >
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           <div className="flex items-center space-x-2">
             <button
@@ -306,7 +323,7 @@ export default function Chat() {
       style={{
         height: "96px",
         background: "linear-gradient(to bottom, rgba(0, 0, 0, 0), hsla(236, 93.80%, 38.20%, 0.81))"
-     }}
+      }}
     >
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
