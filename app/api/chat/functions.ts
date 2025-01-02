@@ -212,6 +212,7 @@ export const tools = [
         description: "Fetch a list of all raw commodity prices and their terminal availability.",
         parameters: {
             type: "object",
+            strict: true,
             properties: {},
             required: [],
             additionalProperties: false,
