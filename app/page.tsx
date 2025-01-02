@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRef, useEffect, useState } from "react";
 import { useChat } from "ai/react";
 import va from "@vercel/analytics";
@@ -14,43 +13,22 @@ import Image from "next/image";
 import debounce from "lodash/debounce";
 import './globals.css'; 
 
+
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [showDonateModal, setShowDonateModal] = useState(false);
-  const [messages, setMessages] = useState<
-    { role: "user" | "assistant"; content: string }[]
-  >([]);
 
-  const { input, setInput, handleSubmit, isLoading } = useChat({
-    onResponse: async (response) => {
+  const { messages, input, setInput, handleSubmit, isLoading } = useChat({
+    onResponse: (response) => {
       if (response.status === 429) {
         toast.error("You have reached your request limit for the day");
         va.track("Rate limited");
         return;
-      }
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let aggregatedMessage = "";
-
-      if (reader) {
-        while (!done) {
-          const { value, done: isDone } = await reader.read();
-          done = isDone;
-          if (value) {
-            const chunk = decoder.decode(value, { stream: true });
-            console.log("Streamed chunk:", chunk);
-            aggregatedMessage += chunk;
-          }
-        }
-
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: aggregatedMessage.trim() },
-        ]);
+      } else {
+        va.track("Chat initiated");
+        scrollToBottom();
       }
     },
     onError: (error) => {
@@ -61,20 +39,10 @@ export default function Chat() {
     },
   });
 
+  
   const disabled = isLoading || input.length === 0;
 
-  const handleUserSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (input.trim()) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "user", content: input },
-      ]);
-      handleSubmit();
-      setInput("");
-    }
-  };
-
+  // State for Dark/Light mode
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("theme") === "dark" ||
@@ -86,6 +54,7 @@ export default function Chat() {
     return false;
   });
 
+  // Apply the Dark/Light mode to the html element
   useEffect(() => {
     const htmlElement = document.documentElement;
     if (isDarkMode) {
@@ -109,6 +78,7 @@ export default function Chat() {
     return () => debounceScroll.cancel();
   }, [messages]);
 
+
   return (
     <main
       className="flex flex-col items-center justify-between min-h-screen text-black dark:text-white"
@@ -121,15 +91,16 @@ export default function Chat() {
         height: "100vh",
         overflow: "auto",
       }}
+      
     >
       {/* Top Bar */}
       <div
-        className="fixed top-0 left-0 w-full z-50 top-bar"
-        style={{
-          height: "96px",
-          background: "linear-gradient(to bottom, hsla(236, 93.80%, 38.20%), rgba(0, 0, 0, 0))",
-        }}
-      >
+      className="fixed top-0 left-0 w-full z-50 top-bar"
+      style={{
+       height: "96px",
+       background: "linear-gradient(to bottom, hsla(236, 93.80%, 38.20%), rgba(0, 0, 0, 0))",
+     }}
+    >
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           <div className="flex items-center space-x-2">
             <button
@@ -333,12 +304,12 @@ export default function Chat() {
       style={{
         height: "96px",
         background: "linear-gradient(to bottom, rgba(0, 0, 0, 0), hsla(236, 93.80%, 38.20%, 0.81))"
-      }}
+     }}
     >
         <div className="relative flex items-center justify-center max-w-screen-md mx-auto">
           <form
             ref={formRef}
-            onSubmit={handleUserSubmit}
+            onSubmit={handleSubmit}
             className="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pb-2 pt-3 shadow-lg sm:pb-3 sm:pt-4"
           >
             <Textarea
