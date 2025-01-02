@@ -278,97 +278,69 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
     const extendedMessages = [systemMessage, ...messages];
 
-    const stream = new ReadableStream({
-        async start(controller) {
-            try {
-                const response = await openai.chat.completions.create({
-                    model: "gpt-4-turbo",
-                    messages: extendedMessages,
-                    stream: true,
-                    functions: functions, // Always include tools
-                    function_call: "auto", // Let the AI decide if a function should be invoked
-                });
-
-                let hasResponded = false;
-
-                for await (const chunk of response) {
-                    const functionCall = chunk.choices[0]?.delta?.function_call;
-
-                    if (functionCall) {
-                        // If a function call is detected, process it
-                        const name = functionCall.name;
-                        let args = {};
-
-                        try {
-                            args = functionCall.arguments
-                                ? JSON.parse(functionCall.arguments)
-                                : {};
-                        } catch (jsonError) {
-                            controller.enqueue(
-                                new TextEncoder().encode(
-                                    `[ERROR] Invalid arguments for function: ${name}\n`
-                                )
-                            );
-                            continue;
-                        }
-
-                        if (name) {
-                            try {
-                                const result = await runFunction(name, args);
-
-                                // Add tool results back to the conversation
-                                const resultMessage = {
-                                    role: "function",
-                                    name,
-                                    content: JSON.stringify(result),
-                                };
-
-                                // Re-run the AI with the function result to generate a user-friendly response
-                                const followUpResponse = await openai.chat.completions.create({
-                                    model: "gpt-4-turbo",
-                                    messages: [...extendedMessages, resultMessage],
-                                    max_tokens: 500,
-                                });
-
-                                const content = followUpResponse.choices[0]?.message?.content;
-                                if (content) {
-                                    hasResponded = true;
-                                    controller.enqueue(new TextEncoder().encode(content));
-                                }
-                            } catch (error) {
-                                controller.enqueue(
-                                    new TextEncoder().encode(
-                                        `[ERROR] Failed to execute function: ${name}\n`
-                                    )
-                                );
-                            }
-                        }
-                    } else {
-                        // Normal AI responses
-                        const text = chunk.choices[0]?.delta?.content || "";
-                        if (text) {
-                            hasResponded = true;
-                            controller.enqueue(new TextEncoder().encode(text));
-                        }
-                    }
-                }
-
-                if (!hasResponded) {
-                    controller.enqueue(new TextEncoder().encode("No response generated.\n"));
-                }
-
-                controller.close();
-            } catch (error) {
-                console.error("[ERROR] Streaming failed:", error);
-                controller.error(new Error("Streaming error occurred"));
-            }
-        },
-    });
-
-    return new Response(stream, {
-        status: 200,
-        headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-        },
-    });
+    const initialResponse = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: extendedMessages,
+      stream: true,
+      functions,
+      function_call: "auto",
+  });
+  
+  const stream = new ReadableStream({
+      async start(controller) {
+          let decoder = new TextDecoder("utf-8");
+          let encoder = new TextEncoder();
+  
+          const handleFunctionCall = async (
+              { name, arguments: args }: { name: string; arguments: any },
+              createFunctionCallMessages: (result: any) => any
+          ) => {
+              const result = await runFunction(name, args);
+              const newMessages = createFunctionCallMessages(result);
+  
+              const response = await openai.chat.completions.create({
+                  model: "gpt-4",
+                  stream: true,
+                  messages: [...extendedMessages, ...newMessages],
+              });
+  
+              const reader = response as unknown as ReadableStreamDefaultReader;
+              if (!reader) throw new Error("Response stream reader unavailable.");
+  
+              while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+                  controller.enqueue(encoder.encode(decoder.decode(value)));
+              }
+          };
+  
+          const reader = initialResponse as unknown as ReadableStreamDefaultReader;
+          if (!reader) throw new Error("Initial response stream reader unavailable.");
+  
+          while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              let decodedValue = decoder.decode(value);
+              let parsedData = JSON.parse(decodedValue);
+  
+              if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.function_call) {
+                  await handleFunctionCall(
+                      parsedData.choices[0].delta.function_call,
+                      (result) => [{ role: "function", name: parsedData.choices[0].delta.function_call.name, content: result }]
+                  );
+              } else {
+                  controller.enqueue(value);
+              }
+          }
+  
+          controller.close();
+      },
+  });
+  
+  return new Response(stream, {
+      headers: { "Content-Type": "text/event-stream" },
+  });
+  
+  
+  
 }
