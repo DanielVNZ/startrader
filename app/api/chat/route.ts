@@ -278,8 +278,6 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
     const extendedMessages = [systemMessage, ...messages];
 
-    const hasFunctions = tools && Object.keys(tools).length > 0;
-
     const stream = new ReadableStream({
         async start(controller) {
             try {
@@ -287,9 +285,8 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     model: "gpt-4-turbo",
                     messages: extendedMessages,
                     stream: true,
-                    ...(hasFunctions
-                        ? { tools, function_call: "auto" }
-                        : {}), // Include tools and function_call only if functions are defined
+                    functions: tools, // Always include tools
+                    function_call: "auto", // Let the AI decide if a function should be invoked
                 });
 
                 let hasResponded = false;
@@ -298,7 +295,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     const functionCall = chunk.choices[0]?.delta?.function_call;
 
                     if (functionCall) {
-                        // Handle function calls
+                        // If a function call is detected, process it
                         const name = functionCall.name;
                         let args = {};
 
@@ -326,7 +323,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                                     content: JSON.stringify(result),
                                 };
 
-                                // Ask AI to interpret and respond naturally
+                                // Re-run the AI with the function result to generate a user-friendly response
                                 const followUpResponse = await openai.chat.completions.create({
                                     model: "gpt-4-turbo",
                                     messages: [...extendedMessages, resultMessage],
@@ -347,7 +344,7 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                             }
                         }
                     } else {
-                        // Handle normal AI responses
+                        // Normal AI responses
                         const text = chunk.choices[0]?.delta?.content || "";
                         if (text) {
                             hasResponded = true;
