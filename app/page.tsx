@@ -22,13 +22,15 @@ export default function Chat() {
 
   const { messages, input, setInput, handleSubmit, isLoading } = useChat({
     onResponse: (response) => {
+      console.log("Response:", response)
+      console.log("Messages:", messages)
       if (response.status === 429) {
         toast.error("You have reached your request limit for the day");
         va.track("Rate limited");
         return;
       } else {
         va.track("Chat initiated");
-        console.log("Messages:", messages)
+        console.log("Messages 2 :", messages)
         scrollToBottom();
       }
     },
