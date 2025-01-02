@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { functions } from "./functions";
+import { functions, runFunction } from "./functions";
 
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({

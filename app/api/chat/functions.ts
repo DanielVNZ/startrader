@@ -1,4 +1,4 @@
-import { put, del, list } from "@vercel/blob"; // Correct imports
+import { put, del, list } from "@vercel/blob";
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
@@ -8,10 +8,7 @@ function sanitizeKey(key: string): string {
 
 async function deleteOldFiles(prefix: string, maxAge: number) {
     try {
-        console.log(`Starting cleanup for folders in prefix: ${prefix}`);
-        const blobs = await list({ prefix }); // Retrieves all blobs matching the prefix
-
-        // Extract unique folder names from the listed blobs
+        const blobs = await list({ prefix });
         const folders = new Set(
             blobs.blobs.map((blob) => {
                 const parts = blob.pathname.split("/");
@@ -23,27 +20,19 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
         const deletedFolders = [];
 
         for (const folder of folders) {
-            if (!folder) continue; // Skip invalid entries
+            if (!folder) continue;
 
-            console.log(`Checking folder: ${folder}`);
-
-            const match = folder.match(/cache\/(\d+)/); // Matches "cache/<timestamp>"
+            const match = folder.match(/cache\/(\d+)/);
             const folderTimestamp = match ? Number(match[1]) : NaN;
 
-            if (isNaN(folderTimestamp)) {
-                console.log(`Skipping non-timestamped folder: ${folder}`);
-                continue;
-            }
+            if (isNaN(folderTimestamp)) continue;
 
             const folderAge = now - folderTimestamp;
 
             if (folderAge > maxAge) {
-                console.log(`Deleting old folder: ${folder}, age: ${folderAge}ms`);
-
                 const folderFiles = await list({ prefix: folder });
                 for (const file of folderFiles.blobs) {
-                    console.log(`Deleting file: ${file.pathname}`);
-                    await del(file.pathname); // Delete each file individually
+                    await del(file.pathname);
                 }
 
                 deletedFolders.push(folder);
@@ -58,41 +47,33 @@ async function deleteOldFiles(prefix: string, maxAge: number) {
 
 async function setCache(key: string, data: any) {
     const sanitizedKey = sanitizeKey(key);
-    const timestamp = Date.now(); // Current timestamp
-    const folderName = `cache/${timestamp}`; // Folder named after timestamp
+    const timestamp = Date.now();
+    const folderName = `cache/${timestamp}`;
 
     const cacheEntry = {
         data,
         expiry: timestamp + CACHE_TTL,
     };
 
-    // Store the cache entry inside the timestamped folder
     await put(`${folderName}/${sanitizedKey}`, JSON.stringify(cacheEntry), {
         contentType: "application/json",
-        access: "public", // Specify access level
+        access: "public",
     });
 
-    console.log(`Cache entry stored in folder: ${folderName}`);
-
-    // Cleanup old folders in the cache directory
     await deleteOldFiles("cache/", CACHE_TTL);
 }
 
 async function getCache(key: string): Promise<any | null> {
     const sanitizedKey = sanitizeKey(key);
 
-    // List blobs with the matching prefix
     const blobs = await list({ prefix: `cache/${sanitizedKey}` });
-
-    // Use `pathname` to match the blob
     const blob = blobs.blobs.find((b) => b.pathname === `cache/${sanitizedKey}`);
 
     if (blob) {
-        const response = await fetch(blob.url); // Fetch blob content using `url`
+        const response = await fetch(blob.url);
         const content = await response.text();
         const cacheEntry = JSON.parse(content);
 
-        // Check expiry
         if (Date.now() < cacheEntry.expiry) {
             return cacheEntry.data;
         } else {
@@ -105,31 +86,22 @@ async function getCache(key: string): Promise<any | null> {
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
     const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
 
-    try {
-        // Check cache first
-        const cachedData = await getCache(cacheKey);
-        if (cachedData) {
-            console.log(`Cache hit for ${cacheKey}`);
-            return cachedData;
-        }
-
-        // Fetch from API
-        const queryString = new URLSearchParams(queryParams).toString();
-        const response = await fetch(`${endpoint}?${queryString}`);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data from ${endpoint}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        // Store in cache
-        await setCache(cacheKey, data);
-        return data;
-    } catch (error) {
-        console.error("Error in fetchWithCache:", error);
-        throw error; // Ensure the error propagates
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
+        return cachedData;
     }
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    const response = await fetch(`${endpoint}?${queryString}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data from ${endpoint}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    await setCache(cacheKey, data);
+    return data;
 }
 
 function validateQueryParams(queryParams: Record<string, any>): void {
@@ -141,18 +113,13 @@ function validateQueryParams(queryParams: Record<string, any>): void {
 // API Fetch Functions with Cache
 async function data_extract() {
     const url = "https://api.uexcorp.space/2.0/data_extract?data=commodities_routes";
-    console.log(`Fetching URL: ${url}`);
     const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
 
-    // Fetch as plain text
-    const text = await response.text();
-    console.log("API Response (Raw Text):", text);
-
-    return text; // Return raw text or process it further if needed
+    return await response.text();
 }
 
 async function get_commodities_prices_all() {
@@ -206,260 +173,156 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
     return await fetchWithCache("https://api.uexcorp.space/2.0/space_stations", queryParams);
 }
 
-// Exported Function Runner
 export async function runFunction(name: string, args: Record<string, any>) {
-    console.log(`Running function: ${name} with args:`, args);
-    try {
-        switch (name) {
-            case "data_extract":
-                return await data_extract();
-            case "get_commodities":
-                return await get_commodities();
-            case "get_commodity_prices":
-                return await get_commodity_prices(args);
-            case "get_cities":
-                return await get_cities(args);
-            case "get_terminals":
-                return await get_terminals(args);
-            case "get_all_terminals":
-                return await get_all_terminals();
-            case "get_planets":
-                return await get_planets(args);
-            case "get_moons":
-                return await get_moons(args);
-            case "get_orbits":
-                return await get_orbits(args);
-            case "get_space_stations":
-                return await get_space_stations(args);
-            case "get_commodities_prices_all":
-                return await get_commodities_prices_all();
-            case "get_commodities_raw_prices_all":
-                return await get_commodities_raw_prices_all();
-            default:
-                throw new Error(`Function ${name} is not defined.`);
-        }
-    } catch (error) {
-        console.error(`Error in function ${name}:`, error);
-        throw error; // Propagate error for debugging
+    switch (name) {
+        case "data_extract":
+            return await data_extract();
+        case "get_commodities":
+            return await get_commodities();
+        case "get_commodity_prices":
+            return await get_commodity_prices(args);
+        case "get_cities":
+            return await get_cities(args);
+        case "get_terminals":
+            return await get_terminals(args);
+        case "get_all_terminals":
+            return await get_all_terminals();
+        case "get_planets":
+            return await get_planets(args);
+        case "get_moons":
+            return await get_moons(args);
+        case "get_orbits":
+            return await get_orbits(args);
+        case "get_space_stations":
+            return await get_space_stations(args);
+        case "get_commodities_prices_all":
+            return await get_commodities_prices_all();
+        case "get_commodities_raw_prices_all":
+            return await get_commodities_raw_prices_all();
+        default:
+            throw new Error(`Function ${name} is not defined.`);
     }
 }
 
-// OpenAI Functions Array
 export const functions = [
     {
-         name: "data_extract",
-         description: "obtain the top 30 commodities routes according to UEX. make sure to add that all values are estimated when providing from this API",
+        name: "data_extract",
+        description: "Obtain the top 30 commodities routes according to UEX. All values are estimated.",
     },
     {
-         name: "get_commodities",
-         description: "Fetch a list of all commodites. This api includes specifics about each commodity like if its buyable or sellable, if its illegal is it raw or refined and average market price.",
+        name: "get_commodities",
+        description: "Fetch a list of all commodities including specifics like legality and market price.",
     },
     {
-         name: "get_commodities_prices_all",
-         description: "Fetch a list of all commodity prices, what terminal the commodity is avaliable at, commoditiy prices etc",
+        name: "get_commodities_prices_all",
+        description: "Fetch a list of all commodity prices and their terminal availability.",
     },
     {
-         name: "get_commodities_raw_prices_all",
-         description: "Fetch a list of all raw commodity prices, what terminal the commodity is avaliable at, commoditiy prices etc",
+        name: "get_commodities_raw_prices_all",
+        description: "Fetch a list of all raw commodity prices and their terminal availability.",
     },
     {
         name: "get_all_terminals",
-        description: "Fetch a list of all terminal information. It will show you information about each terminal in the game.",
-   },
-    {
-         name: "get_commodity_prices",
-         description: "This API requires ONE query parameter, you must provide atleast one of these.",
-         parameters: {
-            type: "object",
-             properties: {
-                 id_terminal: {
-                     type: "string",
-                     description: "Comma-separated terminal IDs (e.g., '1,2,3')."
-                },
-                 id_commodity: {
-                     type: "integer",
-                     description: "The ID of the commodity."
-                },
-                 terminal_name: {
-                     type: "string",
-                     description: "The name of the terminal."
-                },
-                 commodity_name: {
-                     type: "string",
-                     description: "The name of the commodity."
-                },
-                 terminal_code: {
-                     type: "string",
-                     description: "The code of the terminal."
-                },
-                 commodity_code: {
-                     type: "string",
-                     description: "The code of the commodity. PRIORITIZE USING THIS. All commodity codes are in your knowledge base."
-                }
-            },
-             required: [] // No required properties in schema
-        }
+        description: "Fetch a list of all terminal information.",
     },
     {
-        name: "get_cities",
-        description: "This API can be run with no paramaters or with ONE parameter. provides a list of cities.",
+        name: "get_commodity_prices",
+        description: "Fetch specific commodity prices using query parameters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
-                },
-                id_orbit: {
-                    type: "integer",
-                    description: "Orbit ID.",
-                },
-                id_moon: {
-                    type: "integer",
-                    description: "Moon ID.",
-                },
+                id_terminal: { type: "string", description: "Comma-separated terminal IDs." },
+                id_commodity: { type: "integer", description: "Commodity ID." },
+                terminal_name: { type: "string", description: "Terminal name." },
+                commodity_name: { type: "string", description: "Commodity name." },
+                terminal_code: { type: "string", description: "Terminal code." },
+                commodity_code: { type: "string", description: "Commodity code." },
+            },
+            required: [],
+        },
+    },
+    {
+        name: "get_cities",
+        description: "Fetch a list of cities with optional filters.",
+        parameters: {
+            type: "object",
+            properties: {
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_orbit: { type: "integer", description: "Orbit ID." },
+                id_moon: { type: "integer", description: "Moon ID." },
             },
             required: [],
         },
     },
     {
         name: "get_terminals",
-        description: "This API requires ONE query parameter, you must provide atleast one of these.",
+        description: "Fetch terminals using query parameters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
-                },
-                name: {
-                    type: "string",
-                    description: "Terminal name.",
-                },
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                name: { type: "string", description: "Terminal name." },
             },
             required: [],
         },
     },
     {
         name: "get_planets",
-        description: "This API requires ONE query parameter, you must provide atleast one of these. can search specific information about a planet.",
+        description: "Fetch planets with optional filters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
-                },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
-                is_lagrange: {
-                    type: "integer",
-                    description: "Filter for Lagrange points.",
-                },
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
+                is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
             required: [],
         },
     },
     {
         name: "get_moons",
-        description: "This API requires ONE query parameter, you must provide atleast one of these.",
+        description: "Fetch moons using query parameters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
-                },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
-                },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
             required: [],
         },
     },
     {
         name: "get_orbits",
-        description: "This API requires ONE query parameter, you must provide atleast one of these..",
+        description: "Fetch orbit data using query parameters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
-                },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
-                is_lagrange: {
-                    type: "integer",
-                    description: "Filter for Lagrange points.",
-                },
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
+                is_lagrange: { type: "integer", description: "Filter for Lagrange points." },
             },
             required: [],
         },
     },
     {
         name: "get_space_stations",
-        description: "This API requires ONE query parameter, you must provide atleast one of these.",
+        description: "Fetch space station data using query parameters.",
         parameters: {
             type: "object",
             properties: {
-                id_star_system: {
-                    type: "integer",
-                    description: "Star system ID.",
-                },
-                id_planet: {
-                    type: "integer",
-                    description: "Planet ID.",
-                },
-                id_orbit: {
-                    type: "integer",
-                    description: "Orbit ID.",
-                },
-                id_moon: {
-                    type: "integer",
-                    description: "Moon ID.",
-                },
-                id_city: {
-                    type: "integer",
-                    description: "City ID.",
-                },
-                id_faction: {
-                    type: "integer",
-                    description: "Faction ID.",
-                },
-                id_jurisdiction: {
-                    type: "integer",
-                    description: "Jurisdiction ID.",
-                },
+                id_star_system: { type: "integer", description: "Star system ID." },
+                id_planet: { type: "integer", description: "Planet ID." },
+                id_orbit: { type: "integer", description: "Orbit ID." },
+                id_moon: { type: "integer", description: "Moon ID." },
+                id_city: { type: "integer", description: "City ID." },
+                id_faction: { type: "integer", description: "Faction ID." },
+                id_jurisdiction: { type: "integer", description: "Jurisdiction ID." },
             },
             required: [],
         },

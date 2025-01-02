@@ -30,6 +30,7 @@ export default function Chat() {
         va.track("Rate limited");
         return;
       }
+      
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -45,6 +46,8 @@ export default function Chat() {
             console.log("Streamed chunk:", chunk);
             aggregatedMessage += chunk; // Combine chunks
           }
+
+          
         }
 
         // Append the complete message once streaming is done
