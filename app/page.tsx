@@ -83,7 +83,7 @@ export default function Chat() {
     >
     
       {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full bg-white bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 shadow-md z-50">
+      <div className="fixed top-0 left-0 w-full bg-opacity-50 shadow-md z-50">
         <div className="flex justify-between items-center px-4 py-3 max-w-screen-md mx-auto">
           {/* Buttons Container */}
           <div className="flex items-center space-x-2">
