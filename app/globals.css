@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 
-.background::-webkit-scrollbar {
-    display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Edge: Hides scrollbar */
   }
