@@ -105,21 +105,31 @@ async function getCache(key: string): Promise<any | null> {
 async function fetchWithCache(endpoint: string, queryParams: Record<string, any> = {}): Promise<any> {
     const cacheKey = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
 
-    // Check cache first
-    const cachedData = await getCache(cacheKey);
-    if (cachedData) {
-        console.log(`Cache hit for ${cacheKey}`);
-        return cachedData;
+    try {
+        // Check cache first
+        const cachedData = await getCache(cacheKey);
+        if (cachedData) {
+            console.log(`Cache hit for ${cacheKey}`);
+            return cachedData;
+        }
+
+        // Fetch from API
+        const queryString = new URLSearchParams(queryParams).toString();
+        const response = await fetch(`${endpoint}?${queryString}`);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data from ${endpoint}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        // Store in cache
+        await setCache(cacheKey, data);
+        return data;
+    } catch (error) {
+        console.error("Error in fetchWithCache:", error);
+        throw error; // Ensure the error propagates
     }
-
-    // Fetch from API
-    const queryString = new URLSearchParams(queryParams).toString();
-    const response = await fetch(`${endpoint}?${queryString}`);
-    const data = await response.json();
-
-    // Store in cache
-    await setCache(cacheKey, data);
-    return data;
 }
 
 function validateQueryParams(queryParams: Record<string, any>): void {
@@ -150,7 +160,7 @@ async function get_commodities_prices_all() {
 }
 
 async function get_commodities_raw_prices_all() {
-    return await fetchWithCache("	https://api.uexcorp.space/2.0/commodities_raw_prices_all");
+    return await fetchWithCache("https://api.uexcorp.space/2.0/commodities_raw_prices_all");
 }
 
 async function get_commodities() {
@@ -198,33 +208,39 @@ async function get_space_stations(queryParams: Record<string, any> = {}) {
 
 // Exported Function Runner
 export async function runFunction(name: string, args: Record<string, any>) {
-    switch (name) {
-        case "data_extract":
-            return await data_extract();
-        case "get_commodities":
-            return await get_commodities();
-        case "get_commodity_prices":
-            return await get_commodity_prices(args);
-        case "get_cities":
-            return await get_cities(args);
-        case "get_terminals":
-            return await get_terminals(args);
-        case "get_all_terminals":
-            return await get_all_terminals();
-        case "get_planets":
-            return await get_planets(args);
-        case "get_moons":
-            return await get_moons(args);
-        case "get_orbits":
-            return await get_orbits(args);
-        case "get_space_stations":
-            return await get_space_stations(args);
-        case "get_commodities_prices_all":
-            return await get_commodities_prices_all();
-        case "get_commodities_raw_prices_all":
-            return await get_commodities_raw_prices_all();
-        default:
-            throw new Error(`Function ${name} is not defined.`);
+    console.log(`Running function: ${name} with args:`, args);
+    try {
+        switch (name) {
+            case "data_extract":
+                return await data_extract();
+            case "get_commodities":
+                return await get_commodities();
+            case "get_commodity_prices":
+                return await get_commodity_prices(args);
+            case "get_cities":
+                return await get_cities(args);
+            case "get_terminals":
+                return await get_terminals(args);
+            case "get_all_terminals":
+                return await get_all_terminals();
+            case "get_planets":
+                return await get_planets(args);
+            case "get_moons":
+                return await get_moons(args);
+            case "get_orbits":
+                return await get_orbits(args);
+            case "get_space_stations":
+                return await get_space_stations(args);
+            case "get_commodities_prices_all":
+                return await get_commodities_prices_all();
+            case "get_commodities_raw_prices_all":
+                return await get_commodities_raw_prices_all();
+            default:
+                throw new Error(`Function ${name} is not defined.`);
+        }
+    } catch (error) {
+        console.error(`Error in function ${name}:`, error);
+        throw error; // Propagate error for debugging
     }
 }
 
