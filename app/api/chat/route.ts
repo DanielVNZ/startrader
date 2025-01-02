@@ -1,7 +1,6 @@
 import { OpenAI } from "openai";
 import {
     OpenAIStream,
-    StreamingTextResponse,
 } from "ai";
 import { functions, runFunction } from "./functions";
 
