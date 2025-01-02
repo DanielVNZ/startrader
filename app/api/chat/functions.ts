@@ -2,9 +2,6 @@
 // import fetch from "node-fetch";
 
 // Helper function for logging
-function log(message: string, data?: any) {
-    console.log(`[LOG] ${message}`, data ? JSON.stringify(data, null, 2) : '');
-}
 
 
 
