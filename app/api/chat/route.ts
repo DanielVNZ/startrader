@@ -344,5 +344,10 @@ ID: 160, Name: Zip, Commodity Code: ZIP
         },
     });
 
-    return new StreamingTextResponse(stream);
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+    });
 }
