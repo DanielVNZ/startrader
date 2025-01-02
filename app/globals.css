@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 
-.main {
+/* Global scrollbar styles */
+main {
     scrollbar-width: none; /* Hides scrollbar for Firefox */
- }
+    overflow: auto; /* Ensures scrolling is still possible */
+  }
   
-.main::-webkit-scrollbar {
+  main::-webkit-scrollbar {
     display: none; /* Hides scrollbar for Chrome, Safari, and Edge */
-}
+  }
+  
