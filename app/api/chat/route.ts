@@ -278,6 +278,8 @@ ID: 160, Name: Zip, Commodity Code: ZIP
 
     const extendedMessages = [systemMessage, ...messages];
 
+    const hasFunctions = tools && Object.keys(tools).length > 0;
+
     const stream = new ReadableStream({
         async start(controller) {
             try {
@@ -285,8 +287,9 @@ ID: 160, Name: Zip, Commodity Code: ZIP
                     model: "gpt-4-turbo",
                     messages: extendedMessages,
                     stream: true,
-                    tools,
-                    function_call: "auto",
+                    ...(hasFunctions
+                        ? { tools, function_call: "auto" }
+                        : {}), // Include tools and function_call only if functions are defined
                 });
 
                 let hasResponded = false;
