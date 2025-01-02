@@ -85,6 +85,8 @@ export default function Chat() {
         backgroundAttachment: "fixed",
         backgroundRepeat: "no-repeat",
         height: "100vh",
+        overflow: "auto",
+        scrollbarWidth: "none",
       }}
     >
 
