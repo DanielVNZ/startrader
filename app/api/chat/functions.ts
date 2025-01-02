@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+//import fetch from "node-fetch";
 
 function validateQueryParams(queryParams: Record<string, any>): void {
     if (!queryParams || Object.keys(queryParams).length === 0) {
