@@ -11,7 +11,7 @@ import Textarea from "react-textarea-autosize";
 import { toast } from "sonner";
 import Image from "next/image";
 import debounce from "lodash/debounce";
-import './global.css'; 
+import './globals.css'; 
 
 export default function Chat() {
   const formRef = useRef<HTMLFormElement>(null);
