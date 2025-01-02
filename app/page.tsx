@@ -95,36 +95,26 @@ export default function Chat() {
 
   // Apply the Dark/Light mode to the html element
   useEffect(() => {
-    const htmlElement = document.documentElement;
-    if (isDarkMode) {
-      htmlElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      htmlElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  // Initialize Vanta.js Waves Effect
-  useEffect(() => {
     if (typeof window !== "undefined") {
-      window.THREE = THREE; // Add this to make THREE available globally
+      (window as any).THREE = THREE; // Add this to make THREE available globally
     }
-    if (!vantaEffect && vantaRef.current) {
-      setVantaEffect(
-        WAVES({
-          el: vantaRef.current,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.0,
-          minWidth: 200.0,
-          scale: 1.0,
-          scaleMobile: 1.0,
-          color: isDarkMode ? 0x2450 : 0x959af,
-          THREE: THREE,
-        })
-      );
+    if (!vantaEffect && vantaRef.current instanceof HTMLElement) {
+      import("vanta/dist/vanta.waves.min").then((module) => {
+        setVantaEffect(
+          module.default({
+            el: vantaRef.current as HTMLElement,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            color: isDarkMode ? 0x2450 : 0x959af,
+            THREE: THREE,
+          })
+        );
+      });
     }
     return () => {
       if (vantaEffect) vantaEffect.destroy();
@@ -136,6 +126,7 @@ export default function Chat() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
 
   useEffect(() => {
     scrollToBottom();
